@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Tracker</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAPkSURBVHhe7Vs9aBVBEE6Z0tLS0tIypaWlpWXKdKZIbhVhN6AQQSGISAqRFIKCgiksLCxSpIhgYSnJ2/USozxUSPzBPyKezF4W8mbv5XZvZ+/tk/vgg/Dudm9ndmZ2dmczMdGhQ4cOI4BgvbOY+J3/AuJifkIwOc2ZesgzmQumijrCe5ypVTEvZ8RcfhL3mTxg0CKTszxTa1i4JuRMvRJMLYjL+Wn8raQAs80zucgz+RMLQUWwpCStQs84k/t4wDEICgZFg8LxOFqHyLamXH2bmpzJvsjkBTym1gBBKqa5u5IztYTHFhVC5JOcqWU8kFFSrxptuIQOdExt4AGkQJ7J14Llp/CYyXA480kKb6jjUSxLSM3sh1HnHyKfxOMPAixz+EMpkzQwQp6eQrT35rycwbJ4o/R72bc6HwPqSQvNGsfN9DF5plawTM4A7bWV3kbl3OYZLJsTIJBYnY0hIUnCstVCzz5h4NtY/1wsXd+xfm+Nvlag99+4kwDu7x0UBwd/i7Xne8XVK2+s57HpHQuoMz5QgAH8ff9e33onJmElwzIOBeTTuINQHlWAQW/ze7tukW1NYVkroc/icONAVikA0KZbwCEKlrUSnKlnuHEohynAoA23gN0ilrUSMdb+OgUYRHeLuk0SvGA1IqCrAgBx3aLmvCBGAAT6KMAgjlvUFGDKKg1uFM4mCjAgdYu6Q1R4wWpEwBAFAMjcIpOzWOYBxFgCgaEKMIB+blzbtvr34AKWeQBQx6toFEwKBeTqR3H75lurb09ewjIPIMUY8O3rn+Lxgw9Wn80op7HMA4ACpN0onE0VsL62Xywu5FZ/zVm3CuhyNm4UTl8F7O78KpZv7Vr9BNOlwkx5DmDoqgAw99VHH632ZHSpGVBvhYEuCoBDE1pzH6Tzlpj6MAR4nAKimTui86EIHB/hxqGsUkB0c8ec753Hsg4Fdc0fK+Dliy9RzR1Tx7W6neBRUNcBjQLA3O/eeWc9j00448AyHgvqhKj//nfx9Mkn6/f2WJMAVYHyZCh4ExNAfcvMx/wNYgTDkdAn+GHA0mF1OEaE2ccyeYG6QtQ+a3J/F8AW0u44fTonPi7QNzQrPpIqdTrfJPANw+EFKbiza30sNeokLvRiRBXgxDj12yLlrRDPSrAPoPMYhRMKlsL3zuExk6O0hLTcQVtmzJnHOLwxuooHMgrqyYjh8y7Q19YrBtUW9epEGe2boIwLdPsGF5az3oK/+0BfqIwcG/QSV1feGjVg8wHxgTKF1vd/oWo1anP3gS61gzIyteKbP8BSq/0bapUuJ7njgLL0bv5PUB+8IppnNTX8Dh06UOEfs62zaIZ662QAAAAASUVORK5CYII=">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAPkSURBVHhe7Vs9aBVBEE6Z0tLS0tIypaWlpWXKdKZIbhVhN6AQQSGISAqRFIKCgiksLCxSpIhgYSnJ2/USozxUSPzBPyKezF4W8mbv5XZvZ+/tk/vgg/Dudm9ndmZ2dmczMdGhQ4cOI4BgvbOY+J3/AuJifkIwOc2ZesgzmQumijrCe5ypVTEvZ8RcfhL3mTxg0CKTszxTa1i4JuRMvRJMLYjL+Wn8raQAs80zucgz+RMLQUWwpCStQs84k/t4wDEICgZFg8LxOFqHyLamXH2bmpzJvsjkBTym1gBBKqa5u5IztYTHFhVC5JOcqWU8kFFSrxptuIQOdExt4AGkQJ7J14Llp/CYyXA480kKb6jjUSxLSM3sh1HnHyKfxOMPAixz+EMpkzQwQp6eQrT35rycwbJ4o/R72bc6HwPqSQvNGsfN9DF5plawTM4A7bWV3kbl3OYZLJsTIJBYnY0hIUnCstVCzz5h4NtY/1wsXd+xfm+Nvlag99+4kwDu7x0UBwd/i7Xne8XVK2+s57HpHQuoMz5QgAH8ff9e33onJmElwzIOBeTTuINQHlWAQW/ze7tukW1NYVkroc/icONAVikA0KZbwCEKlrUSnKlnuHEohynAoA23gN0ilrUSMdb+OgUYRHeLuk0SvGA1IqCrAgBx3aLmvCBGAAT6KMAgjlvUFGDKKg1uFM4mCjAgdYu6Q1R4wWpEwBAFAMjcIpOzWOYBxFgCgaEKMIB+blzbtvr34AKWeQBQx6toFEwKBeTqR3H75lurb09ewjIPIMUY8O3rn+Lxgw9Wn80op7HMA4ACpN0onE0VsL62Xywu5FZ/zVm3CuhyNm4UTl8F7O78KpZv7Vr9BNOlwkx5DmDoqgAw99VHH632ZHSpGVBvhYEuCoBDE1pzH6Tzlpj6MAR4nAKimTui86EIHB/hxqGsUkB0c8ec753Hsg4Fdc0fK+Dliy9RzR1Tx7W6neBRUNcBjQLA3O/eeWc9j00448AyHgvqhKj//nfx9Mkn6/f2WJMAVYHyZCh4ExNAfcvMx/wNYgTDkdAn+GHA0mF1OEaE2ccyeYG6QtQ+a3J/F8AW0u44fTonPi7QNzQrPpIqdTrfJPANw+EFKbiza30sNeokLvRiRBXgxDj12yLlrRDPSrAPoPMYhRMKlsL3zuExk6O0hLTcQVtmzJnHOLwxuooHMgrqyYjh8y7Q19YrBtUW9epEGe2boIwLdPsGF5az3oK/+0BfqIwcG/QSV1feGjVg8wHxgTKF1vd/oWo1anP3gS61gzIyteKbP8BSq/0bapUuJ7njgLL0bv5PUB+8IppnNTX8Dh06UOEfs62zaIZ662QAAAAASUVORK5CYII=">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-tertiary: #ebebeb;
+    --text-primary: #111111;
+    --text-secondary: #666666;
+    --border: rgba(0,0,0,0.12);
+    --border-md: rgba(0,0,0,0.22);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --accent: #7F77DD;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #252525;
+      --bg-tertiary: #2e2e2e;
+      --text-primary: #f0f0f0;
+      --text-secondary: #999999;
+      --border: rgba(255,255,255,0.1);
+      --border-md: rgba(255,255,255,0.18);
+    }
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-tertiary); color: var(--text-primary); min-height: 100vh; }
+  .app { width: 100%; margin: 0 auto; padding: 24px 20px; }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  h1 span { color: var(--accent); }
+
+  .week-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .week-btn { flex-shrink: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 0.5px solid var(--border-md); border-radius: 99px; background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .week-btn:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+  .week-btn:disabled { opacity: 0.35; cursor: default; }
+  .week-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; flex: 1; text-align: center; }
+  .week-label b { color: var(--text-primary); font-weight: 600; }
+
+  .day-row { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+  .day-btn { flex-shrink: 0; padding: 6px 16px; font-size: 12px; font-weight: 500; border: 0.5px solid var(--border); border-radius: 99px; cursor: pointer; background: var(--bg-primary); color: var(--text-secondary); white-space: nowrap; transition: all 0.15s; }
+  .day-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .day-btn.today:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .section-title { font-size: 15px; font-weight: 500; }
+  .count-badge { font-size: 11px; color: var(--text-secondary); background: var(--bg-secondary); padding: 3px 10px; border-radius: 99px; border: 0.5px solid var(--border); }
+
+  .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; }
+
+  .card { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; }
+  .card-cover { position: relative; width: 100%; aspect-ratio: 2/3; background: var(--bg-secondary); overflow: hidden; flex-shrink: 0; }
+  .card-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-cover .fallback { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; text-align: center; }
+  .card-cover .fallback span { font-size: 40px; }
+  .card-cover .fallback p { font-size: 10px; color: var(--text-secondary); line-height: 1.4; }
+  .time-chip { position: absolute; bottom: 7px; left: 7px; background: rgba(0,0,0,0.72); color: #fff; font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 99px; display: flex; align-items: center; gap: 3px; }
+
+  .card-body { padding: 9px 10px 11px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .card-title { font-size: 12px; font-weight: 500; color: var(--text-primary); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .stream-pills { display: flex; flex-wrap: wrap; gap: 3px; }
+  .pill { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 99px; text-decoration: none; white-space: nowrap; display: inline-block; }
+  .mal-link { font-size: 10px; color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; gap: 3px; }
+  .mal-link:hover { color: var(--accent); }
+  .lang-row { display: flex; gap: 4px; align-items: center; }
+  .lang-badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 99px; letter-spacing: 0.03em; white-space: nowrap; }
+  .lang-sub { background: #e0f2fe; color: #075985; }
+  .lang-dub { background: #ede9fe; color: #5b21b6; }
+  @media (prefers-color-scheme: dark) {
+    .lang-sub { background: #0c4a6e; color: #bae6fd; }
+    .lang-dub { background: #2e1065; color: #ddd6fe; }
+  }
+
+  .loading-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; }
+  .skeleton { background: var(--bg-secondary); border-radius: var(--radius-lg); aspect-ratio: 2/3; animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-secondary); font-size: 13px; }
+  .empty i { font-size: 36px; display: block; margin-bottom: 10px; }
+
+  .filter-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+  .filter-chip { padding: 4px 12px; font-size: 11px; font-weight: 500; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .filter-chip.active { color: #fff; border-color: transparent; }
+
+  h1 { justify-content: space-between; }
+  .h1-left { display: flex; align-items: center; gap: 10px; }
+  .icon-btn { width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; font-size: 18px; transition: all 0.15s; }
+  .icon-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg-primary); border: 0.5px solid var(--border-md); border-radius: var(--radius-lg); width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; padding: 20px; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .modal-header h2 { font-size: 17px; font-weight: 600; }
+  .modal-close { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 22px; line-height: 1; padding: 0; }
+  .modal-close:hover { color: var(--text-primary); }
+  .setting-block { margin-bottom: 18px; }
+  .setting-label { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .setting-desc { font-size: 11px; color: var(--text-secondary); margin-bottom: 9px; line-height: 1.4; }
+  .browser-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .browser-opt { padding: 7px 13px; font-size: 12px; font-weight: 500; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .browser-opt.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .setting-note { font-size: 10.5px; color: var(--text-secondary); line-height: 1.45; margin-top: 10px; padding: 9px 11px; background: var(--bg-secondary); border-radius: var(--radius-md); border: 0.5px solid var(--border); }
+  .icon-btn { font-size: 16px; }
+  .modal-footer { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 6px; }
+  .save-status { font-size: 12px; color: var(--accent); font-weight: 500; opacity: 0; transition: opacity 0.2s; }
+  .save-status.show { opacity: 1; }
+  .save-btn { padding: 8px 22px; font-size: 13px; font-weight: 600; border-radius: 99px; border: none; background: var(--accent); color: #fff; cursor: pointer; transition: filter 0.15s; }
+  .save-btn:hover { filter: brightness(1.08); }
+  .browser-opt.pending { outline: 2px solid var(--accent); outline-offset: 1px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>
+    <span class="h1-left">📺 <span>Anime</span> Tracker</span>
+    <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙️</button>
+  </h1>
+
+  <div id="scheduleSection">
+    <div class="week-nav">
+      <button class="week-btn" id="prevWeek" title="Previous week" aria-label="Previous week">‹</button>
+      <span class="week-label" id="weekLabel"></span>
+      <button class="week-btn" id="nextWeek" title="Next week" aria-label="Next week">›</button>
+    </div>
+    <div class="day-row" id="dayRow"></div>
+    <div class="section-header">
+      <span class="section-title" id="dayLabel"></span>
+      <span class="count-badge" id="dayCount"></span>
+    </div>
+    <div class="filter-row" id="schedFilterRow"></div>
+    <div id="schedGrid"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>⚙️ Settings</h2>
+      <button class="modal-close" id="settingsClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="setting-block">
+      <div class="setting-label">Open links in</div>
+      <div class="setting-desc">Choose which browser streaming &amp; info links open in.</div>
+      <div class="browser-opts" id="browserOpts"></div>
+      <div class="setting-note" id="browserNote"></div>
+    </div>
+    <div class="modal-footer">
+      <span class="save-status" id="saveStatus"></span>
+      <button class="save-btn" id="settingsSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const USER_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAY_MAP = {Sunday:0,Monday:1,Tuesday:2,Wednesday:3,Thursday:4,Friday:5,Saturday:6};
+const TODAY_IDX = new Date().getDay();
+
+const PLAT = {
+  crunchyroll:{bg:'#F47521',c:'#fff',l:'Crunchyroll'},
+  funimation:{bg:'#410099',c:'#fff',l:'Funimation'},
+  netflix:{bg:'#E50914',c:'#fff',l:'Netflix'},
+  hulu:{bg:'#1CE783',c:'#0d5c35',l:'Hulu'},
+  'prime video':{bg:'#00A8E0',c:'#fff',l:'Prime Video'},
+  amazon:{bg:'#00A8E0',c:'#fff',l:'Prime Video'},
+  disney:{bg:'#0b3d91',c:'#fff',l:'Disney+'},
+  hidive:{bg:'#00b5e2',c:'#fff',l:'HIDIVE'},
+  bilibili:{bg:'#00a1d6',c:'#fff',l:'Bilibili'},
+  iqiyi:{bg:'#00be06',c:'#fff',l:'iQIYI'},
+  'muse asia':{bg:'#e63946',c:'#fff',l:'Muse Asia'},
+  bahamut:{bg:'#0066cc',c:'#fff',l:'Bahamut'},
+  abema:{bg:'#1a1a2e',c:'#fff',l:'Abema'},
+  'd anime':{bg:'#0055c8',c:'#fff',l:'dAnime'},
+  'u-next':{bg:'#111',c:'#fff',l:'U-NEXT'},
+  niconico:{bg:'#888',c:'#fff',l:'niconico'},
+  wakanim:{bg:'#e6003a',c:'#fff',l:'Wakanim'},
+  'ani-one':{bg:'#c0392b',c:'#fff',l:'Ani-One'},
+  aniplus:{bg:'#0055c8',c:'#fff',l:'Aniplus'},
+  catchplay:{bg:'#333',c:'#fff',l:'CatchPlay'},
+  tubi:{bg:'#fa541c',c:'#fff',l:'Tubi'},
+  peacock:{bg:'#222',c:'#fff',l:'Peacock'},
+};
+function getPlatform(name) {
+  const k = name.toLowerCase();
+  for (const [key,v] of Object.entries(PLAT)) { if (k.includes(key)) return v; }
+  return {bg:'#555',c:'#fff',l:name.split(' ')[0]};
+}
+
+const ROMAN = {i:1,ii:2,iii:3,iv:4,v:5,vi:6,vii:7,viii:8,ix:9,x:10};
+function parseSeasonFromTitle(title) {
+  if (!title) return null;
+  let m = title.match(/(?:Season|Cour|Part)\s+(\d+)/i);
+  if (m) return parseInt(m[1]);
+  m = title.match(/(\d+)(?:st|nd|rd|th)\s+Season/i);
+  if (m) return parseInt(m[1]);
+  m = title.match(/\s([IVX]{1,5})$/);
+  if (m) { const r = ROMAN[m[1].toLowerCase()]; if (r && r > 1) return r; }
+  return null;
+}
+
+// Returns {season, episode} relative to the season. AniList episode is per-entry
+// and often already season-relative; only continuous numbering is adjusted.
+const SEASON_FORMATS = ['TV','TV_SHORT','ONA'];
+function seasonRelative(media, absEp) {
+  const title = media.title?.english || media.title?.romaji || '';
+  let season = parseSeasonFromTitle(title);
+  let prequelEps = 0, prequelCount = 0;
+  (media.relations?.edges || []).forEach(e => {
+    if (e.relationType === 'PREQUEL' && e.node?.type === 'ANIME' && SEASON_FORMATS.includes(e.node.format)) {
+      prequelCount++;
+      prequelEps += e.node.episodes || 0;
+    }
+  });
+  // Derive a season from the prequel chain only when the title has no explicit
+  // marker AND the episode count isn't a long-running absolute count
+  // (One Piece, Detective Conan, etc. should not be labelled "Season 2").
+  if (season == null && prequelCount > 0 && !(absEp != null && absEp > 50)) {
+    season = prequelCount + 1;
+  }
+  let episode = absEp;
+  const total = media.episodes || null;
+  // Continuous numbering (e.g. split cours): make episode relative to this season.
+  if (absEp != null && total && absEp > total && prequelEps > 0) {
+    episode = absEp - prequelEps;
+  }
+  return { season, episode };
+}
+
+const fmtTime = d => d ? d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:USER_TZ}) : '';
+const fmtTZ   = d => { try { return d.toLocaleTimeString('en-US',{timeZoneName:'short',timeZone:USER_TZ}).split(' ').pop(); } catch(e){return '';} };
+
+function jstToLocal(timeStr, dayName) {
+  if (!timeStr || !dayName) return null;
+  const clean = dayName.replace(/s$/,'');
+  const targetDay = DAY_MAP[clean];
+  if (targetDay === undefined) return null;
+  const [h,m] = timeStr.split(':').map(Number);
+  const jstOff = 9*60, localOff = -(new Date().getTimezoneOffset());
+  const now = new Date();
+  const d = new Date(now);
+  d.setSeconds(0,0);
+  d.setHours(h, m - (jstOff - localOff));
+  let ahead = (targetDay - d.getDay() + 7) % 7;
+  if (ahead === 0 && d <= now) ahead = 7;
+  d.setDate(d.getDate() + ahead);
+  return d;
+}
+
+const schedCache = {}, dubCache = {};
+const MAX_WEEK = 10;
+let activeWeek = 0, activeDay = TODAY_IDX, schedPlatFilter = 'all';
+const cacheKey = (wk, day) => `w${wk}d${day}`;
+
+const DUB_SITES = new Set(['funimation','hidive']);
+const PINNED_PLATFORMS = ['Crunchyroll', 'Netflix', 'Hulu', 'Amazon Prime Video'];
+
+// ---- Adult-content filter: never show hentai ----
+function isAniListAdult(media) {
+  if (!media) return false;
+  if (media.isAdult) return true;
+  return (media.genres || []).some(g => /hentai/i.test(g));
+}
+function isJikanAdult(a) {
+  if (!a) return false;
+  if (/(^|\W)(rx|hentai)/i.test(a.rating || '')) return true;
+  return (a.genres || []).some(g => /hentai/i.test(g.name || ''));
+}
+
+// ---- Dedup / merge helpers (kills duplicate cards, unions their links) ----
+function normTitle(t) { return (t || '').toLowerCase().replace(/[^a-z0-9]+/g, ''); }
+function mergeStreams(into, extra) {
+  const seen = new Set((into || []).map(s => (s.site||s.name||'').toLowerCase() + '|' + (s.url||'')));
+  (extra || []).forEach(s => {
+    const k = (s.site||s.name||'').toLowerCase() + '|' + (s.url||'');
+    if (!seen.has(k)) { into.push(s); seen.add(k); }
+  });
+  return into;
+}
+// True if `e` is the same show as `x` (by MAL id, AniList id, or title).
+function sameShow(x, e) {
+  if (e.malId != null && x.malId === e.malId) return true;
+  if (e.alId != null && x.alId === e.alId) return true;
+  const nt = normTitle(e.title);
+  return nt && normTitle(x.title) === nt;
+}
+// Merge a candidate into an existing entry (combine links + fill gaps).
+function mergeInto(x, e) {
+  x.streams = mergeStreams(x.streams || [], e.streams || []);
+  if (x.episode == null && e.episode != null) x.episode = e.episode;
+  if (x.season == null && e.season != null) x.season = e.season;
+  if (!x.img && e.img) x.img = e.img;
+  if (x.airingAt == null && e.airingAt != null) x.airingAt = e.airingAt;
+  if (x.malId == null && e.malId != null) x.malId = e.malId;
+  if (x.alId == null && e.alId != null) x.alId = e.alId;
+  if (x.source !== 'anilist' && e.source === 'anilist') { x.infoUrl = e.infoUrl; x.source = 'anilist'; }
+}
+// Collapse a list of entries, merging duplicates.
+function dedupMerge(entries) {
+  const out = [];
+  for (const e of entries) {
+    const x = out.find(o => sameShow(o, e));
+    if (x) mergeInto(x, e); else out.push(e);
+  }
+  return out;
+}
+// Insert-or-merge into an existing day list. Returns true if it changed.
+function upsertEntry(list, e) {
+  const x = list.find(o => sameShow(o, e));
+  if (x) { const before = (x.streams||[]).length; mergeInto(x, e); return (x.streams||[]).length !== before; }
+  list.push(e); return true;
+}
+
+function dubStatusFromStreams(streams) {
+  if (!streams || !streams.length) return null;
+  const names = streams.map(s => (s.name||s.site||'').toLowerCase());
+  if (names.some(n => DUB_SITES.has(n) || n.includes('funimation') || n.includes('hidive'))) return 'subdub';
+  if (streams.some(s => s.language && s.language.toLowerCase().includes('dub'))) return 'subdub';
+  return 'sub';
+}
+
+// Sunday (local midnight) of the week `weekOffset` weeks from now.
+function weekSunday(weekOffset) {
+  const now = new Date();
+  const sun = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+  sun.setDate(sun.getDate() + weekOffset * 7);
+  return sun;
+}
+
+function buildWeekLabel() {
+  const sun = weekSunday(activeWeek);
+  const sat = new Date(sun); sat.setDate(sun.getDate() + 6);
+  const fmt = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const yr = sat.getFullYear();
+  const tag = activeWeek === 0 ? 'This week'
+    : activeWeek === 1 ? 'Next week'
+    : `In ${activeWeek} weeks`;
+  document.getElementById('weekLabel').innerHTML = `<b>${tag}</b> · ${fmt(sun)} – ${fmt(sat)}, ${yr}`;
+  document.getElementById('prevWeek').disabled = activeWeek <= 0;
+  document.getElementById('nextWeek').disabled = activeWeek >= MAX_WEEK;
+}
+
+function buildDayRow() {
+  const showToday = activeWeek === 0;
+  document.getElementById('dayRow').innerHTML = DAYS.map((d,i) => {
+    const isToday = showToday && i===TODAY_IDX, isActive = i===activeDay;
+    return `<button class="day-btn${isActive?' active':''}${isToday&&!isActive?' today':''}" onclick="selectDay(${i})">${d.slice(0,3)}${isToday?' ●':''}</button>`;
+  }).join('');
+}
+
+function selectDay(idx) { activeDay=idx; schedPlatFilter='all'; buildDayRow(); loadDay(idx); }
+
+function changeWeek(delta) {
+  const next = Math.min(MAX_WEEK, Math.max(0, activeWeek + delta));
+  if (next === activeWeek) return;
+  activeWeek = next;
+  if (activeWeek !== 0) activeDay = 0; else activeDay = TODAY_IDX;
+  schedPlatFilter = 'all';
+  buildWeekLabel();
+  buildDayRow();
+  loadDay(activeDay);
+}
+
+// AniList rate-limits (HTTP 429); retry with backoff so concurrent calls at
+// startup don't silently drop a whole day's schedule.
+async function aniListQuery(query, variables, attempts = 4) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch('https://graphql.anilist.co', {
+        method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify({ query, variables })
+      });
+      if (res.status === 429) {
+        const ra = parseInt(res.headers.get('retry-after') || '0', 10);
+        await new Promise(r => setTimeout(r, (ra > 0 ? ra * 1000 : 1500 * (i + 1))));
+        continue;
+      }
+      if (!res.ok) { await new Promise(r => setTimeout(r, 700 * (i + 1))); continue; }
+      const j = await res.json();
+      if (j?.data) return j.data;
+    } catch (e) { /* network hiccup — retry */ }
+    await new Promise(r => setTimeout(r, 700 * (i + 1)));
+  }
+  return null;
+}
+
+async function fetchAniListPage(start, end, page) {
+  const query = `query($s:Int,$e:Int,$p:Int){Page(page:$p,perPage:50){pageInfo{hasNextPage}airingSchedules(airingAt_greater:$s,airingAt_lesser:$e,sort:TIME){airingAt episode media{id idMal isAdult genres title{romaji english}coverImage{large}siteUrl format episodes relations{edges{relationType node{type format episodes}}}externalLinks{site url type language color}}}}}`;
+  const data = await aniListQuery(query, { s:start, e:end, p:page });
+  return data ? data.Page : null;
+}
+
+// A link counts as "streaming" if AniList tags it STREAMING, or its site is a
+// known streaming platform (catches occasional mis-typed links).
+const KNOWN_STREAM_KEYS = Object.keys(PLAT);
+// Sites we never want to show as links.
+const BLOCKED_SITES = ['oceanveil'];
+function isBlockedSite(l) {
+  const s = ((l.site || l.name || '') + ' ' + (l.url || '')).toLowerCase();
+  return BLOCKED_SITES.some(b => s.includes(b));
+}
+function isStreamingLink(l) {
+  if (!l || !l.url) return false;
+  if (isBlockedSite(l)) return false;
+  if (l.type === 'STREAMING') return true;
+  if (l.type === 'INFO' || l.type === 'SOCIAL') {
+    const s = (l.site || '').toLowerCase();
+    return KNOWN_STREAM_KEYS.some(k => s.includes(k));
+  }
+  return false;
+}
+
+function fromAniList(s) {
+  const streams = (s.media.externalLinks||[]).filter(isStreamingLink);
+  const dub = dubStatusFromStreams(streams);
+  if (s.media.idMal && dub) dubCache[s.media.idMal] = dub;
+  const sr = seasonRelative(s.media, s.episode);
+  return {
+    uid: `al_${s.media.id}`,
+    malId: s.media.idMal,
+    alId: s.media.id,
+    title: s.media.title.english || s.media.title.romaji,
+    img: s.media.coverImage?.large || '',
+    airingAt: s.airingAt * 1000,
+    episode: sr.episode,
+    season: sr.season,
+    streams,
+    infoUrl: s.media.siteUrl,
+    source: 'anilist'
+  };
+}
+
+function fromJikan(a) {
+  const bc = a.broadcast||{};
+  const dayName = bc.day ? bc.day.replace(/s$/,'') : null;
+  const airDate = jstToLocal(bc.time, dayName);
+  return {
+    uid: `jk_${a.mal_id}`,
+    malId: a.mal_id,
+    alId: null,
+    title: a.title_english || a.title,
+    img: a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || '',
+    airingAt: airDate ? airDate.getTime() : null,
+    episode: null,
+    streams: [],
+    infoUrl: `https://myanimelist.net/anime/${a.mal_id}`,
+    source: 'jikan'
+  };
+}
+
+async function loadDay(idx) {
+  const key = cacheKey(activeWeek, idx);
+  const isTodayCell = activeWeek === 0 && idx === TODAY_IDX;
+  document.getElementById('dayLabel').textContent = DAYS[idx] + (isTodayCell ? ' (today)' : '');
+  document.getElementById('dayCount').textContent = '';
+  if (schedCache[key]) { renderSched(schedCache[key]); return; }
+  document.getElementById('schedGrid').innerHTML = `<div class="loading-grid">${Array(10).fill('<div class="skeleton"></div>').join('')}</div>`;
+
+  const sun = weekSunday(activeWeek);
+  const target = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + idx);
+  const dayStart = Math.floor(target.getTime() / 1000);
+  const dayEnd = dayStart + 86399;
+
+  // AniList airing schedule (date-windowed) is the source of truth for any week.
+  // Jikan's day schedule only reflects the *current* week, so use it for week 0 only.
+  const [alPage, jikanData] = await Promise.all([
+    fetchAniListPage(dayStart, dayEnd, 1).catch(() => null),
+    activeWeek === 0
+      ? fetch(`https://api.jikan.moe/v4/schedules?filter=${DAYS[idx].toLowerCase()}&page=1&sfw=true`)
+          .then(r => r.json()).then(j => j?.data || []).catch(() => [])
+      : Promise.resolve([])
+  ]);
+
+  const fromSchedules = sch => (sch || []).filter(s => !isAniListAdult(s.media)).map(fromAniList);
+  let alEntries = fromSchedules(alPage?.airingSchedules);
+
+  if (alPage?.pageInfo?.hasNextPage) {
+    let page = 2;
+    while (page <= 6) {
+      await new Promise(r => setTimeout(r, 350));
+      const p = await fetchAniListPage(dayStart, dayEnd, page).catch(() => null);
+      if (!p) break;
+      alEntries = alEntries.concat(fromSchedules(p.airingSchedules));
+      if (!p.pageInfo?.hasNextPage) break;
+      page++;
+    }
+  }
+
+  const jikanEntries = jikanData.filter(a => !isJikanAdult(a)).map(fromJikan);
+  const unified = dedupMerge([...alEntries, ...jikanEntries])
+    .sort((a,b) => (a.airingAt||Infinity) - (b.airingAt||Infinity));
+  schedCache[key] = unified;
+  if (cacheKey(activeWeek, activeDay) === key) renderSched(unified);
+}
+
+let platformFetchDone = false;
+async function fetchAllPlatformAnime() {
+  if (platformFetchDone) return;
+  platformFetchDone = true;
+  const query = `query($p:Int){Page(page:$p,perPage:50){pageInfo{hasNextPage}media(status:RELEASING,type:ANIME,isAdult:false,sort:POPULARITY_DESC){id idMal isAdult genres title{romaji english}coverImage{large}siteUrl format episodes relations{edges{relationType node{type format episodes}}}nextAiringEpisode{airingAt episode}externalLinks{site url type language color}}}}`;
+  const now = new Date();
+  const weekSun = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+  const weekEnd = new Date(weekSun); weekEnd.setDate(weekSun.getDate() + 7);
+  for (let page = 1; page <= 4; page++) {
+    await new Promise(r => setTimeout(r, 600));
+    try {
+      const result = await aniListQuery(query, { p: page });
+      const data = result ? result.Page : null;
+      if (!data) break;
+      for (const m of (data.media || [])) {
+        if (isAniListAdult(m)) continue;
+        const streams = (m.externalLinks||[]).filter(isStreamingLink);
+        if (!streams.length || !m.nextAiringEpisode?.airingAt) continue;
+        const d = new Date(m.nextAiringEpisode.airingAt * 1000);
+        if (d < weekSun || d >= weekEnd) continue;
+        const dayIdx = d.getDay();
+        const sr = seasonRelative(m, m.nextAiringEpisode.episode);
+        const entry = {
+          uid: `al_${m.id}`, malId: m.idMal, alId: m.id,
+          title: m.title.english || m.title.romaji,
+          img: m.coverImage?.large || '',
+          airingAt: d.getTime(),
+          episode: sr.episode,
+          season: sr.season,
+          streams, infoUrl: m.siteUrl, source: 'anilist'
+        };
+        const dub = dubStatusFromStreams(streams);
+        if (m.idMal && dub) dubCache[m.idMal] = dub;
+        const key = cacheKey(0, dayIdx);
+        if (!schedCache[key]) schedCache[key] = [];
+        const changed = upsertEntry(schedCache[key], entry);
+        if (changed) {
+          schedCache[key].sort((a,b) => (a.airingAt||Infinity) - (b.airingAt||Infinity));
+          if (activeWeek === 0 && activeDay === dayIdx) renderSched(schedCache[key]);
+        }
+      }
+      if (!data.pageInfo?.hasNextPage) break;
+    } catch(e) { break; }
+  }
+}
+
+function getPlatformNames(streams) {
+  return (streams||[]).map(s => (s.site || s.name || '').trim()).filter(Boolean);
+}
+
+function buildFilterRow(containerId, platforms, activeFilter, onSelect) {
+  const row = document.getElementById(containerId);
+  const merged = [...PINNED_PLATFORMS];
+  platforms.forEach(p => { if (!merged.some(m => m.toLowerCase() === p.toLowerCase())) merged.push(p); });
+  const all = ['All', ...merged];
+  row.innerHTML = all.map(p => {
+    const isActive = (p === 'All' && activeFilter === 'all') || p === activeFilter;
+    const plat = p === 'All' ? null : getPlatform(p);
+    const bg = isActive ? (plat ? plat.bg : 'var(--accent)') : '';
+    const style = isActive ? `background:${bg};` : '';
+    return `<button class="filter-chip${isActive?' active':''}" style="${style}" onclick="(${onSelect.toString()})('${p === 'All' ? 'all' : p}')">${p}</button>`;
+  }).join('');
+}
+
+function renderSched(data) {
+  document.getElementById('dayCount').textContent = `${data.length} anime`;
+  if (!data.length) { document.getElementById('schedGrid').innerHTML=`<div class="empty"><i class="ti ti-moon"></i>No anime scheduled for this day.</div>`; return; }
+  const platSet = new Set();
+  data.forEach(a => getPlatformNames(a.streams).forEach(p => platSet.add(p)));
+  buildFilterRow('schedFilterRow', [...platSet], schedPlatFilter, (p) => { schedPlatFilter = p; renderSched(schedCache[cacheKey(activeWeek, activeDay)]); });
+  const filtered = schedPlatFilter === 'all' ? data : data.filter(a => getPlatformNames(a.streams).some(p => p === schedPlatFilter));
+  document.getElementById('schedGrid').innerHTML = filtered.length
+    ? `<div class="anime-grid">${filtered.map(schedCardHTML).join('')}</div>`
+    : `<div class="empty"><i class="ti ti-filter-off"></i>No anime on ${schedPlatFilter} today.</div>`;
+}
+
+function esc(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+function schedCardHTML(a) {
+  const airDate = a.airingAt ? new Date(a.airingAt) : null;
+  const timeStr = airDate ? fmtTime(airDate) : '';
+  const tzStr   = airDate ? fmtTZ(airDate) : '';
+
+  const seenSites = new Set();
+  const streamingLinks = a.streams.filter(l => {
+    if (!l.url) return false;
+    const key = (l.site || l.name || '').toLowerCase();
+    if (seenSites.has(key)) return false;
+    seenSites.add(key);
+    return true;
+  });
+  const streamHTML = streamingLinks.length
+    ? `<div class="stream-pills">${streamingLinks.map(s => {
+        const bg = s.color || getPlatform(s.site||s.name||'').bg || '#555';
+        const label = (s.site||s.name||'').replace(' TV','').replace(' Global','');
+        return `<a href="${s.url}" target="_blank" class="pill" style="background:${bg};color:#fff" title="${s.site||s.name}">${label}</a>`;
+      }).join('')}</div>`
+    : `<a href="${a.infoUrl}" target="_blank" class="mal-link"><i class="ti ti-external-link" style="font-size:10px"></i>${a.source==='anilist'?'AniList':'MAL'}</a>`;
+
+  const dubKey = a.malId || a.alId;
+  const dubSt = dubCache[dubKey] || dubStatusFromStreams(a.streams) || 'sub';
+  const langHTML = dubSt === 'subdub'
+    ? `<span class="lang-badge lang-sub">SUB</span><span class="lang-badge lang-dub">DUB</span>`
+    : `<span class="lang-badge lang-sub">SUB</span>`;
+
+  return `<div class="card">
+    <div class="card-cover">
+      ${a.img ? `<img src="${a.img}" alt="${a.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'fallback\\'><span>📺</span><p>${esc(a.title)}</p></div>'">` : `<div class="fallback"><span>📺</span><p>${a.title}</p></div>`}
+      ${timeStr ? `<div class="time-chip"><i class="ti ti-clock" style="font-size:9px"></i>${timeStr}<span style="opacity:0.7;font-size:9px;margin-left:2px">${tzStr}</span></div>` : ''}
+    </div>
+    <div class="card-body">
+      <p class="card-title">${a.title}</p>
+      ${a.episode ? `<div style="font-size:10px;color:var(--text-secondary);margin-bottom:-2px"><i class="ti ti-player-play" style="font-size:9px;vertical-align:-1px;margin-right:2px"></i>${a.season ? `Season ${a.season} · ` : ''}Episode ${a.episode}</div>` : ''}
+      <div class="lang-row">${langHTML}</div>
+      ${streamHTML}
+    </div>
+  </div>`;
+}
+
+/* ---------- Settings: choose which browser links open in ---------- */
+const BROWSERS = {
+  default: { label: 'Default',  pkg: null },
+  chrome:  { label: 'Chrome',   pkg: 'com.android.chrome' },
+  edge:    { label: 'Edge',     pkg: 'com.microsoft.emmx' },
+  firefox: { label: 'Firefox',  pkg: 'org.mozilla.firefox' },
+  brave:   { label: 'Brave',    pkg: 'com.brave.browser' },
+  opera:   { label: 'Opera',    pkg: 'com.opera.browser' },
+};
+const IS_ANDROID = /Android/i.test(navigator.userAgent);
+
+const appSettings = (() => {
+  try { return JSON.parse(localStorage.getItem('animeTrackerSettings')) || {}; }
+  catch (e) { return {}; }
+})();
+if (!appSettings.browser) appSettings.browser = 'default';
+function saveSettings() {
+  try { localStorage.setItem('animeTrackerSettings', JSON.stringify(appSettings)); } catch (e) {}
+}
+
+// Open a URL honoring the user's chosen browser, with graceful fallback.
+function openLink(url) {
+  if (!url) return;
+  const pref = appSettings.browser || 'default';
+  if (pref === 'default') { window.open(url, '_blank', 'noopener'); return; }
+
+  if (IS_ANDROID) {
+    const pkg = BROWSERS[pref] && BROWSERS[pref].pkg;
+    const m = url.match(/^(https?):\/\/(.*)$/i);
+    if (pkg && m) {
+      window.location.href = `intent://${m[2]}#Intent;scheme=${m[1]};package=${pkg};` +
+        `S.browser_fallback_url=${encodeURIComponent(url)};end`;
+      return;
+    }
+    window.open(url, '_blank', 'noopener');
+    return;
+  }
+
+  // Desktop: Edge has a reliable protocol handler on Windows.
+  if (pref === 'edge') { window.location.href = 'microsoft-edge:' + url; return; }
+  // Other desktop browsers have no universal launch scheme — open normally.
+  window.open(url, '_blank', 'noopener');
+}
+
+// Route external link clicks. On "Default", let the link open natively
+// (target="_blank") so the app window hands it to the user's last-active
+// browser window instead of spawning a separate popup. Only intercept when
+// a specific browser is chosen.
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href]');
+  if (!a) return;
+  const href = a.getAttribute('href');
+  if (!/^https?:/i.test(href)) return;
+  if ((appSettings.browser || 'default') === 'default') return; // native open
+  e.preventDefault();
+  openLink(href);
+});
+
+// Pending selection — only committed to appSettings when "Save" is clicked.
+let pendingBrowser = appSettings.browser;
+
+function browserNoteText() {
+  if (pendingBrowser === 'default') return 'Links open in this device’s default browser.';
+  if (IS_ANDROID) return 'Links will open in ' + BROWSERS[pendingBrowser].label + ' if it’s installed, otherwise your default browser.';
+  if (pendingBrowser === 'edge') return 'On Windows, links open in Microsoft Edge.';
+  return 'On desktop, only Edge can be force-targeted; other choices fall back to your default browser. (Full browser choice works in the Android app.)';
+}
+function renderSettings() {
+  document.getElementById('browserOpts').innerHTML = Object.entries(BROWSERS).map(([key, b]) =>
+    `<button class="browser-opt${pendingBrowser === key ? ' active pending' : ''}" data-browser="${key}">${b.label}</button>`
+  ).join('');
+  document.getElementById('browserNote').textContent = browserNoteText();
+}
+document.getElementById('browserOpts').addEventListener('click', (e) => {
+  const btn = e.target.closest('.browser-opt');
+  if (!btn) return;
+  pendingBrowser = btn.dataset.browser;        // stage the choice; not saved yet
+  document.getElementById('saveStatus').classList.remove('show');
+  renderSettings();
+});
+
+const settingsModal = document.getElementById('settingsModal');
+function openSettings() {
+  pendingBrowser = appSettings.browser;        // reset staged choice to saved value
+  document.getElementById('saveStatus').classList.remove('show');
+  renderSettings();
+  settingsModal.classList.add('open');
+}
+function closeSettings() { settingsModal.classList.remove('open'); }
+
+// Save: commit the pending selection to storage and confirm.
+function saveMenu() {
+  appSettings.browser = pendingBrowser;
+  saveSettings();
+  const status = document.getElementById('saveStatus');
+  status.textContent = '✓ Saved';
+  status.classList.add('show');
+  setTimeout(() => { closeSettings(); }, 650);
+}
+
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+document.getElementById('settingsClose').addEventListener('click', closeSettings);
+document.getElementById('settingsSave').addEventListener('click', saveMenu);
+settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettings(); });
+
+document.getElementById('prevWeek').addEventListener('click', () => changeWeek(-1));
+document.getElementById('nextWeek').addEventListener('click', () => changeWeek(1));
+
+buildWeekLabel();
+buildDayRow();
+loadDay(activeDay);
+// Start the background platform fill after the initial day has loaded, so the
+// two don't race AniList's rate limiter and drop today's schedule.
+setTimeout(fetchAllPlatformAnime, 2500);
+
+/* Open the desktop app window at a fixed size. Chrome ignores --window-size
+   when it restores an app window's remembered bounds, so we enforce it from
+   inside. Runs only in a standalone single-tab app window (where resizeTo is
+   allowed); normal browser tabs and the Android app are left untouched. */
+(function setDesktopWindowSize() {
+  if (IS_ANDROID) return;
+  const standalone =
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+    (window.matchMedia && window.matchMedia('(display-mode: minimal-ui)').matches) ||
+    (window.locationbar && window.locationbar.visible === false);
+  if (!standalone) return;
+  try { window.resizeTo(883, 830); } catch (e) { /* resize not permitted */ }
+})();
+</script>
+</body>
+</html>

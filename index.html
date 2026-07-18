@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tyler Dalby — AI-Assisted Software Portfolio</title>
+<meta name="description" content="Portfolio of desktop, web, and mobile applications built with Claude and other AI coding tools.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav container">
+    <span class="nav-brand">Tyler Dalby</span>
+    <div class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <div class="hero container">
+    <p class="hero-kicker">AI-Assisted Software Development</p>
+    <h1>I build real, working software<br>with AI coding tools.</h1>
+    <p class="hero-sub">
+      Desktop apps, web apps, mobile builds, and command-line utilities — designed,
+      developed, and shipped using <strong>Claude Code</strong> and other AI development
+      tools. Every project below is in daily use, from game-integration tooling to
+      media-server automation.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Shipped projects</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Platforms — desktop, web, Android</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Packaged Windows executables</span></div>
+    </div>
+  </div>
+</header>
+
+<main id="projects" class="container">
+  <h2 class="section-title">Projects</h2>
+
+  <!-- ============ Elite Discoveries ============ -->
+  <article class="project">
+    <div class="shot">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>Elite Discoveries — localhost:8765</em></div>
+      <img src="images/elite-discoveries.png" alt="Elite Discoveries app showing a stats strip and categorized list of first-discovered star systems" loading="lazy">
+    </div>
+    <div class="info">
+      <div class="meta">
+        <span class="type">Desktop / Local Web App</span>
+        <span class="ai-badge">Built with Claude Code</span>
+      </div>
+      <h3>Elite Discoveries</h3>
+      <p class="lede">A first-discovery tracker for <em>Elite Dangerous</em> that turns the game's raw journal logs into a personal exploration museum.</p>
+      <p>
+        The app parses hundreds of the game's journal files locally to find every star
+        system, planet, and moon the player was the <strong>first commander in the galaxy</strong>
+        to discover, map, or land on. It runs as a zero-dependency Python server with a
+        framework-free single-page UI, and packages into a single standalone Windows
+        executable that opens in its own app window.
+      </p>
+      <ul class="features">
+        <li>Parses 250+ journal files and attributes discoveries to the correct commander automatically</li>
+        <li>Categorized system browser — Earth-like worlds, water worlds, ammonia worlds, anomalies — with search, filters, and sorting</li>
+        <li>Procedurally generated holographic "portraits" for every planet, drawn from its real stats</li>
+        <li>Distance-from-here mode: type any system and every discovery re-sorts by light-year distance</li>
+        <li>In-game Codex reader, optional Inara/EDSM profile integration, and a full OAuth2 + PKCE flow for Frontier's Companion API</li>
+        <li>One-click build to a self-contained <code>.exe</code> with installer and desktop-shortcut scripts</li>
+      </ul>
+      <div class="tags">
+        <span>Python</span><span>JavaScript</span><span>HTML / CSS</span><span>HTTP Server</span><span>OAuth2</span><span>PyInstaller</span>
+      </div>
+      <!-- dl:start -->
+      <div class="download">
+        <h4>Download</h4>
+        <div class="dl-row">
+          <a class="dl-btn" href="downloads/Elite-Discoveries.exe" download>
+            <span class="dl-icon">⬇</span>
+            <span class="dl-text"><strong>Windows app</strong><small>.exe · 8 MB</small></span>
+          </a>
+        </div>
+        <p class="dl-note">Personal build — unsigned, so Windows SmartScreen will ask you to confirm the install.</p>
+      </div>
+      <!-- dl:end -->
+    </div>
+  </article>
+
+  <!-- ============ MW5 VKB Mapper ============ -->
+  <article class="project">
+    <div class="shot">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>MW5 VKB HOSAS Mapper</em></div>
+      <img src="images/mw5-vkb-mapper.png" alt="MW5 VKB HOSAS Mapper showing dual-stick axis and button binding editor with a joystick diagram" loading="lazy">
+    </div>
+    <div class="info">
+      <div class="meta">
+        <span class="type">Windows Desktop App</span>
+        <span class="ai-badge">Built with Claude Code</span>
+      </div>
+      <h3>MW5 VKB HOSAS Mapper</h3>
+      <p class="lede">A full GUI for configuring dual VKB flight sticks in MechWarrior 5 — replacing hand-editing of an obscure config-file format.</p>
+      <p>
+        MechWarrior 5 can't bind twin joysticks through its own menus; it reads a
+        specially formatted <code>HOTASMappings.Remap</code> file. This app detects both
+        physical sticks, shows live input feedback as you wiggle each axis and press each
+        button, and writes a correctly formatted mapping file with automatic backups —
+        then goes further and writes the in-game action bindings too.
+      </p>
+      <ul class="features">
+        <li>Live device detection with real-time axis bars and button lights (pygame under the hood)</li>
+        <li>One-click HOSAS preset plus a guided calibration wizard — no guessing axis indices</li>
+        <li>Photo-based stick diagrams: press a physical button and its marker lights up on the image</li>
+        <li>Supports MechWarrior 5: Mercenaries, Clans, and MechWarrior Online — each with its own file format and action names</li>
+        <li>Auto-sync keeps the game's config current whenever a binding changes, with timestamped backups</li>
+        <li>Named profiles, per-axis invert/deadzone tuning, and a duplicate VID/PID conflict warning system</li>
+      </ul>
+      <div class="tags">
+        <span>Python</span><span>Tkinter</span><span>pygame</span><span>Pillow</span><span>Win32</span><span>PyInstaller</span>
+      </div>
+      <!-- dl:start -->
+      <div class="download">
+        <h4>Download</h4>
+        <div class="dl-row">
+          <a class="dl-btn" href="downloads/MW5-VKB-Mapper.exe" download>
+            <span class="dl-icon">⬇</span>
+            <span class="dl-text"><strong>Windows app</strong><small>.exe · 23 MB</small></span>
+          </a>
+        </div>
+        <p class="dl-note">Personal build — unsigned, so Windows SmartScreen will ask you to confirm the install.</p>
+      </div>
+      <!-- dl:end -->
+    </div>
+  </article>
+
+  <!-- ============ Anime Tracker ============ -->
+  <article class="project">
+    <div class="shot">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>Anime Tracker</em></div>
+      <img src="images/anime-tracker.png" alt="Anime Tracker showing a weekly grid of currently airing shows with poster art, air times, and streaming platforms" loading="lazy">
+    </div>
+    <div class="info">
+      <div class="meta">
+        <span class="type">Web App · Desktop · Android</span>
+        <span class="ai-badge">Built with Claude Code</span>
+      </div>
+      <h3>Anime Tracker</h3>
+      <p class="lede">A weekly airing-schedule tracker for currently running anime — one codebase shipped three ways: browser, installable desktop app, and native Android build.</p>
+      <p>
+        The tracker pulls live season data from public APIs and lays out
+        each day's releases with poster art, episode numbers, air times in the local
+        timezone, and sub/dub availability. A day strip and per-platform filters
+        (Crunchyroll, Netflix, Hulu, Prime Video, and more) make it a glanceable
+        "what's on today" dashboard.
+      </p>
+      <ul class="features">
+        <li>Live schedule data from the AniList and Jikan (MyAnimeList) APIs</li>
+        <li>Week navigation with a per-day view, episode counts, and local air times</li>
+        <li>Filter by streaming platform, with per-show platform badges</li>
+        <li>Entire web app is a single self-contained HTML file — no build step, no server</li>
+        <li>Desktop edition installs as a pinnable taskbar app with its own icon and window</li>
+        <li>Android edition built as a native Gradle project</li>
+      </ul>
+      <div class="tags">
+        <span>JavaScript</span><span>HTML / CSS</span><span>AniList API</span><span>Jikan API</span><span>Android</span><span>Gradle</span>
+      </div>
+      <!-- dl:start -->
+      <div class="download">
+        <h4>Download</h4>
+        <div class="dl-row">
+          <a class="dl-btn" href="downloads/Anime-Tracker.html" download>
+            <span class="dl-icon">⬇</span>
+            <span class="dl-text"><strong>Web app</strong><small>single .html · 39 KB</small></span>
+          </a>
+          <a class="dl-btn" href="downloads/Anime-Tracker-Android.apk" download>
+            <span class="dl-icon">⬇</span>
+            <span class="dl-text"><strong>Android app</strong><small>.apk · 5 MB</small></span>
+          </a>
+        </div>
+        <p class="dl-note">The .html runs in any browser — just open it. The APK is a personal build; Android will ask you to allow the install.</p>
+      </div>
+      <!-- dl:end -->
+    </div>
+  </article>
+
+  <!-- ============ Plex Media Manager ============ -->
+  <article class="project">
+    <div class="shot">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>Plex Media Manager — Settings</em></div>
+      <img src="images/plex-media-manager.png" alt="Plex Media Manager desktop app showing phone pairing, UGREEN NAS connection settings, and Plex server integration" loading="lazy">
+    </div>
+    <div class="info">
+      <div class="meta">
+        <span class="type">Desktop App · Android · CLI</span>
+        <span class="ai-badge">Built with Claude Code</span>
+      </div>
+      <h3>Plex Media Manager</h3>
+      <p class="lede">A desktop app with a companion Android client that connects a Windows Plex host to a NAS, organizes a personal media library into Plex's exact naming conventions, and browses the result with cover art and search.</p>
+      <p>
+        Plex only auto-fetches posters, summaries, and cast info when files follow its
+        strict folder and naming rules. This app validates the SMB connection to the
+        NAS, builds the expected library structure, and renames and relocates existing
+        media files to match — safely, with a dry-run-by-default design. One Python
+        engine powers three surfaces: a windowed desktop app, an Android APK that pairs
+        with it over Wi-Fi, and a CLI for automation.
+      </p>
+      <ul class="features">
+        <li>Desktop app in its own window, Android phone app, and a CLI — all sharing one engine</li>
+        <li>SMB reachability probe, write-permission test, and free-space report at a glance</li>
+        <li>Organizes messy file names into proper <code>Movie (Year)</code> and <code>Show — s01e01</code> structures, dry-run by default with sidecar subtitle handling</li>
+        <li>Plex server integration: library browser with cover art, categories, and name search</li>
+        <li>UNC-path-first design so the Plex background service can always see the library</li>
+        <li>Packaged as a standalone Windows <code>.exe</code>; settings stay local in <code>config.json</code></li>
+      </ul>
+      <div class="tags">
+        <span>Python</span><span>HTTP Server</span><span>Android</span><span>SMB / NAS</span><span>Plex API</span><span>PyInstaller</span>
+      </div>
+      <!-- dl:start -->
+      <div class="download">
+        <h4>Download</h4>
+        <div class="dl-row">
+          <a class="dl-btn" href="downloads/Plex-Media-Manager.exe" download>
+            <span class="dl-icon">⬇</span>
+            <span class="dl-text"><strong>Windows app</strong><small>.exe · 8 MB</small></span>
+          </a>
+          <a class="dl-btn" href="downloads/Plex-Media-Manager-Android.apk" download>
+            <span class="dl-icon">⬇</span>
+            <span class="dl-text"><strong>Android app</strong><small>.apk · 5 MB</small></span>
+          </a>
+        </div>
+        <p class="dl-note">Personal builds — unsigned, so Windows SmartScreen / Android will ask you to confirm the install.</p>
+      </div>
+      <!-- dl:end -->
+    </div>
+  </article>
+</main>
+
+<section id="about" class="about">
+  <div class="container">
+    <h2 class="section-title">About This Work</h2>
+    <div class="about-grid">
+      <div class="about-card">
+        <h4>AI-assisted, human-directed</h4>
+        <p>Each project was built through iterative sessions with Claude Code — I define the product, the requirements, and the edge cases; the AI accelerates implementation. The result is production-quality software delivered far faster than solo development.</p>
+      </div>
+      <div class="about-card">
+        <h4>Real users, real constraints</h4>
+        <p>These aren't demos. They parse real game journals, write real config files with backup safety, talk to real hardware over USB, and manage a live media server — with the error handling that daily use demands.</p>
+      </div>
+      <div class="about-card">
+        <h4>Full delivery pipeline</h4>
+        <p>Projects ship as packaged Windows executables with installers, icons, and desktop shortcuts — plus test suites, README documentation, and clean git history. Shipping is part of the skill.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact" class="site-footer">
+  <div class="container">
+    <h2>Let's build something.</h2>
+    <p>Open to AI-assisted development roles and projects.</p>
+    <a class="contact-btn" href="mailto:tylerdalby8@gmail.com">tylerdalby8@gmail.com</a>
+    <p class="footer-note">© 2026 Tyler Dalby · Site built with Claude Code, naturally.</p>
+  </div>
+</footer>
+
+</body>
+</html>
