@@ -197,6 +197,65 @@ code {
 
 .shot img { display: block; width: 100%; height: auto; }
 
+/* quick-access links under each screenshot */
+
+.shot-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 11px 14px;
+  background: #1a1f2b;
+  border-top: 1px solid var(--border-soft);
+}
+
+.shot-links-label {
+  color: var(--text-faint);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-right: 2px;
+}
+
+.shot-links a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 13px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.shot-links a:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.shot-links a small {
+  color: var(--text-faint);
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  font-weight: 400;
+}
+
+.shot-links .shot-link-live {
+  color: #0e1310;
+  background: linear-gradient(135deg, var(--accent-2), #38b2a3);
+  border-color: transparent;
+}
+
+.shot-links .shot-link-live:hover {
+  background: linear-gradient(135deg, #66dcd0, var(--accent-2));
+  border-color: transparent;
+}
+
 /* terminal card (Plex) */
 
 .terminal { padding: 18px 20px; background: #0d1017; }
