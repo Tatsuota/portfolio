@@ -79,6 +79,9 @@ code {
 
 .nav-email:hover { color: var(--accent); }
 
+/* elements that only appear in the PDF/print export */
+.print-only { display: none !important; }
+
 .nav-links { display: flex; gap: 26px; }
 
 .nav-links a {
@@ -480,6 +483,27 @@ code {
 
   /* ---- page 1: cover (nav + hero only) ---- */
   .hero { padding: 120px 24px 60px; }
+
+  /* the live-site URL is front and centre on the PDF cover */
+  .print-only { display: inline-flex !important; }
+
+  .nav-site {
+    color: var(--accent);
+    font-size: 0.82rem;
+    text-decoration: none;
+  }
+
+  .hero-live {
+    margin-top: 30px;
+    align-items: center;
+    background: linear-gradient(135deg, var(--accent), #6d5df0);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 12px 24px;
+    border-radius: 10px;
+  }
 
   /* ---- one project per page ---- */
   main .section-title { break-before: page; margin: 34px 0 0; }
