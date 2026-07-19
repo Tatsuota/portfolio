@@ -58,11 +58,26 @@ code {
   padding-bottom: 22px;
 }
 
+.nav-ident {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 .nav-brand {
   font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: 0.04em;
 }
+
+.nav-email {
+  color: var(--text-dim);
+  font-size: 0.84rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.nav-email:hover { color: var(--accent); }
 
 .nav-links { display: flex; gap: 26px; }
 
@@ -506,4 +521,70 @@ code {
   .nav-links { gap: 16px; }
   .hero-stats { flex-direction: column; }
   .stat { min-width: 0; }
+}
+
+/* ===== print / PDF export =====
+   MUST stay last in this file: the print viewport is 816px wide, so the
+   max-width:900px responsive rules above also match during PDF export and
+   would override these if they came later. */
+
+@page { size: letter; margin: 0; }
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body { background: var(--bg); }
+
+  /* in-page anchor nav is pointless in a PDF */
+  .nav-links { display: none; }
+
+  /* ---- page 1: cover (nav + hero only) ---- */
+  .hero { padding: 120px 24px 60px; }
+
+  /* ---- one project per page ---- */
+  main .section-title { break-before: page; margin: 34px 0 0; }
+  main .project:first-of-type { break-before: auto; }
+
+  .project {
+    break-before: page;
+    break-inside: avoid;
+    grid-template-columns: 6fr 5fr;
+    gap: 24px;
+    padding: 30px 0;
+    border-bottom: none;
+    align-items: center;
+  }
+
+  /* consistent image-left layout reads cleaner page after page */
+  .project:nth-of-type(even) .shot { order: 0; }
+  .project:nth-of-type(even) .info { order: 0; }
+
+  /* compact type so a full card fits a single Letter page */
+  .info h3 { font-size: 1.3rem; margin-bottom: 7px; }
+  .lede { font-size: 0.86rem; margin-bottom: 9px; }
+  .info > p:not(.lede) { font-size: 0.79rem; margin-bottom: 12px; }
+  .features { margin-bottom: 14px; }
+  .features li { font-size: 0.76rem; margin-bottom: 6px; padding-left: 18px; }
+  .features li::before { left: 2px; }
+  .tags span { font-size: 0.66rem; padding: 3px 8px; }
+  .meta { margin-bottom: 10px; }
+  .type, .ai-badge { font-size: 0.62rem; padding: 3px 10px; }
+  .shot { box-shadow: none; }
+  .shot-chrome { padding: 7px 11px; }
+  .shot-chrome em { font-size: 0.66rem; }
+  .shot-links { padding: 8px 11px; gap: 6px; }
+  .shot-links-label { font-size: 0.62rem; }
+  .shot-links a { font-size: 0.7rem; padding: 4px 10px; }
+  .shot-links a small { font-size: 0.62rem; }
+
+  /* ---- last page: about + contact ---- */
+  .about { break-before: page; margin-top: 0; }
+  .about .section-title { margin-top: 40px; }
+  .about-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 24px; }
+  .about-card { padding: 18px 20px; }
+  .about { padding-bottom: 34px; }
+  .site-footer { padding: 46px 0 32px; }
 }
