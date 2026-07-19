@@ -4,7 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tyler Dalby — AI-Assisted Software Portfolio</title>
-<meta name="description" content="Portfolio of desktop, web, and mobile applications built with Claude and other AI coding tools.">
+<meta name="description" content="Tyler Dalby's portfolio of working desktop, web, and Android applications built with Claude Code and other AI coding tools — game tooling, media-server automation, and more, with downloads.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tatsuota.github.io/portfolio/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tyler Dalby — AI-Assisted Software Portfolio">
+<meta property="og:description" content="Working desktop, web, and Android applications built with Claude Code and other AI coding tools — with screenshots and downloads.">
+<meta property="og:url" content="https://tatsuota.github.io/portfolio/">
+<meta property="og:image" content="https://tatsuota.github.io/portfolio/images/elite-discoveries.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Tyler Dalby",
+  "email": "mailto:tylerdalby8@gmail.com",
+  "url": "https://tatsuota.github.io/portfolio/",
+  "jobTitle": "AI-Assisted Software Developer",
+  "knowsAbout": ["Python", "JavaScript", "Android", "AI-assisted development", "Claude Code"]
+}
+</script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -58,21 +77,24 @@
         <span class="ai-badge">Built with Claude Code</span>
       </div>
       <h3>Elite Discoveries</h3>
-      <p class="lede">A first-discovery tracker for <em>Elite Dangerous</em> that turns the game's raw journal logs into a personal exploration museum.</p>
+      <p class="lede">A first-discovery tracker for <em>Elite Dangerous</em> that turns the game's raw journal logs into a personal exploration record.</p>
       <p>
-        The app parses hundreds of the game's journal files locally to find every star
-        system, planet, and moon the player was the <strong>first commander in the galaxy</strong>
-        to discover, map, or land on. It runs as a zero-dependency Python server with a
-        framework-free single-page UI, and packages into a single standalone Windows
-        executable that opens in its own app window.
+        Elite Dangerous writes everything a player does to local journal files, but the
+        game itself has no screen where you can review which star systems you were the
+        first commander to find. This app fills that gap: it reads the journal folder
+        directly, follows which commander was logged in at the time of every scan, and
+        applies the game's own <code>WasDiscovered</code> / <code>WasMapped</code> /
+        <code>WasFootfalled</code> flags — so its results match the "Discovered by"
+        tags shown in-game. No login, no API key, and nothing leaves the machine.
       </p>
       <ul class="features">
-        <li>Parses 250+ journal files and attributes discoveries to the correct commander automatically</li>
-        <li>Categorized system browser — Earth-like worlds, water worlds, ammonia worlds, anomalies — with search, filters, and sorting</li>
-        <li>Procedurally generated holographic "portraits" for every planet, drawn from its real stats</li>
-        <li>Distance-from-here mode: type any system and every discovery re-sorts by light-year distance</li>
-        <li>In-game Codex reader, optional Inara/EDSM profile integration, and a full OAuth2 + PKCE flow for Frontier's Companion API</li>
-        <li>One-click build to a self-contained <code>.exe</code> with installer and desktop-shortcut scripts</li>
+        <li>Parses 250+ journal files, keeps the earliest scan of each body, and skips scans made by other characters sharing the same save folder</li>
+        <li>Groups finds into the game's own categories — Earth-like worlds, water worlds, ammonia worlds, anomalies — with search, filters, sorting, and one-click name copy for the in-game galaxy map</li>
+        <li>"From here" mode reads your current location from the journals and re-sorts every discovery by light-year distance, banded nearest-first</li>
+        <li>Every planet gets a wireframe portrait drawn from its actual stats, alongside atmosphere, gravity, temperature, rings, bio/geo signals, and terraformable/landable badges</li>
+        <li>A Codex tab rebuilds your biological, geological, and astronomical finds from journal <code>CodexEntry</code> events, flagging first-logged entries</li>
+        <li>Optional commander profile card via Inara or EDSM keys, plus a working OAuth2 + PKCE login flow for Frontier's Companion API — keys stay server-side, never sent to the browser</li>
+        <li>Builds to a single self-contained <code>.exe</code> that opens in its own window, with installer and desktop-shortcut scripts</li>
       </ul>
       <div class="tags">
         <span>Python</span><span>JavaScript</span><span>HTML / CSS</span><span>HTTP Server</span><span>OAuth2</span><span>PyInstaller</span>
@@ -108,21 +130,24 @@
         <span class="ai-badge">Built with Claude Code</span>
       </div>
       <h3>MW5 VKB HOSAS Mapper</h3>
-      <p class="lede">A full GUI for configuring dual VKB flight sticks in MechWarrior 5 — replacing hand-editing of an obscure config-file format.</p>
+      <p class="lede">A Windows GUI for setting up two VKB flight sticks in MechWarrior 5 — replacing hand-editing of an undocumented config-file format.</p>
       <p>
-        MechWarrior 5 can't bind twin joysticks through its own menus; it reads a
-        specially formatted <code>HOTASMappings.Remap</code> file. This app detects both
-        physical sticks, shows live input feedback as you wiggle each axis and press each
-        button, and writes a correctly formatted mapping file with automatic backups —
-        then goes further and writes the in-game action bindings too.
+        MechWarrior 5 has no menu for binding twin joysticks. Instead it reads a text
+        file, <code>HOTASMappings.Remap</code>, that routes each physical input to one
+        of two virtual devices the game understands — a format most players edit by
+        hand, by trial and error. This app does the whole job visually: it detects both
+        sticks over USB, shows exactly which axis or button you're moving in real time,
+        builds the mapping, and writes a correctly formatted file straight into the
+        game's folder with an automatic backup each time.
       </p>
       <ul class="features">
-        <li>Live device detection with real-time axis bars and button lights (pygame under the hood)</li>
-        <li>One-click HOSAS preset plus a guided calibration wizard — no guessing axis indices</li>
-        <li>Photo-based stick diagrams: press a physical button and its marker lights up on the image</li>
-        <li>Supports MechWarrior 5: Mercenaries, Clans, and MechWarrior Online — each with its own file format and action names</li>
-        <li>Auto-sync keeps the game's config current whenever a binding changes, with timestamped backups</li>
-        <li>Named profiles, per-axis invert/deadzone tuning, and a duplicate VID/PID conflict warning system</li>
+        <li>Live input panel identifies every control as you move it, with each button labeled by VKB's own grip names (Trigger, A1 Red Button, Coolie Hat…)</li>
+        <li>One-click HOSAS preset builds a sensible two-stick layout; a calibration wizard maps axes by watching which one you actually deflect</li>
+        <li>Binding editor is ordered like the game's own keybind menu — click an action's keybind, press a button on either stick, and it warns if that button is already in use</li>
+        <li>Photo-based stick diagram (standard or Omni-Throttle grip): press a physical control and its marker lights up green on the image</li>
+        <li>Auto-detects MechWarrior 5: Mercenaries, Clans, and MechWarrior Online — including MWO's different <code>actionmaps.xml</code> format, edited surgically so keyboard binds are left untouched</li>
+        <li>Auto-sync pushes changes to the connected game seconds after an edit, and can write in-game button commands to <code>GameUserSettings.ini</code> as well</li>
+        <li>Named profiles, per-axis invert/offset/deadzone tuning, and a warning banner when two identical sticks share a USB VID/PID (with the firmware fix explained)</li>
       </ul>
       <div class="tags">
         <span>Python</span><span>Tkinter</span><span>pygame</span><span>Pillow</span><span>Win32</span><span>PyInstaller</span>
@@ -159,21 +184,24 @@
         <span class="ai-badge">Built with Claude Code</span>
       </div>
       <h3>Anime Tracker</h3>
-      <p class="lede">A weekly airing-schedule tracker for currently running anime — one codebase shipped three ways: browser, installable desktop app, and native Android build.</p>
+      <p class="lede">A weekly airing-schedule tracker for the current anime season — one codebase shipped three ways: browser, installable desktop app, and native Android build.</p>
       <p>
-        The tracker pulls live season data from public APIs and lays out
-        each day's releases with poster art, episode numbers, air times in the local
-        timezone, and sub/dub availability. A day strip and per-platform filters
-        (Crunchyroll, Netflix, Hulu, Prime Video, and more) make it a glanceable
-        "what's on today" dashboard.
+        Keeping up with a season of anime means checking several streaming services and
+        release calendars; this app collapses that into one glanceable page. It queries
+        the AniList and Jikan (MyAnimeList) APIs for the season's schedule, converts
+        every air time into the viewer's local timezone, and lays out each day as a row
+        of poster cards — what airs today, what episode number it's on, and where it
+        streams. The whole thing is a single HTML file with no build step, which is
+        also what makes the desktop and Android wrappers practical.
       </p>
       <ul class="features">
-        <li>Live schedule data from the AniList and Jikan (MyAnimeList) APIs</li>
-        <li>Week navigation with a per-day view, episode counts, and local air times</li>
-        <li>Filter by streaming platform, with per-show platform badges</li>
-        <li>Entire web app is a single self-contained HTML file — no build step, no server</li>
-        <li>Desktop edition installs as a pinnable taskbar app with its own icon and window</li>
-        <li>Android edition built as a native Gradle project</li>
+        <li>Live season data from the AniList and Jikan APIs, laid out on a Sunday-to-Saturday strip with back/forward week navigation</li>
+        <li>Each show card carries poster art, air time in your timezone, season and episode number, and SUB/DUB availability tags</li>
+        <li>Streaming-platform filter row — Crunchyroll, Netflix, Hulu, Prime Video, HIDIVE, and more — with matching badges on every card</li>
+        <li>A per-day count shows how many shows air that day; the current day is highlighted on the strip</li>
+        <li>The entire web app is one self-contained HTML file: open it in any browser and it just runs — no server, no install</li>
+        <li>Desktop edition installs Start-menu and desktop shortcuts with its own icon and opens in a standalone app window</li>
+        <li>Android edition is a native Gradle project that installs as a normal APK</li>
       </ul>
       <div class="tags">
         <span>JavaScript</span><span>HTML / CSS</span><span>AniList API</span><span>Jikan API</span><span>Android</span><span>Gradle</span>
@@ -217,19 +245,22 @@
       <p class="lede">A desktop app with a companion Android client that connects a Windows Plex host to a NAS, organizes a personal media library into Plex's exact naming conventions, and browses the result with cover art and search.</p>
       <p>
         Plex only auto-fetches posters, summaries, and cast info when files follow its
-        strict folder and naming rules. This app validates the SMB connection to the
-        NAS, builds the expected library structure, and renames and relocates existing
-        media files to match — safely, with a dry-run-by-default design. One Python
-        engine powers three surfaces: a windowed desktop app, an Android APK that pairs
-        with it over Wi-Fi, and a CLI for automation.
+        strict folder and naming rules, and a NAS-based setup adds its own pitfalls —
+        Plex's background service can't even see mapped drive letters. This app manages
+        that whole arrangement: it verifies the SMB connection to the NAS share, builds
+        the folder tree Plex expects, and renames and relocates existing media files to
+        match. Organizing is dry-run by default — every planned move is printed for
+        review before anything is touched. One Python engine powers three surfaces: a
+        windowed desktop app, an Android client, and a CLI for automation.
       </p>
       <ul class="features">
-        <li>Desktop app in its own window, Android phone app, and a CLI — all sharing one engine</li>
-        <li>SMB reachability probe, write-permission test, and free-space report at a glance</li>
-        <li>Organizes messy file names into proper <code>Movie (Year)</code> and <code>Show — s01e01</code> structures, dry-run by default with sidecar subtitle handling</li>
-        <li>Plex server integration: library browser with cover art, categories, and name search</li>
-        <li>UNC-path-first design so the Plex background service can always see the library</li>
-        <li>Packaged as a standalone Windows <code>.exe</code>; settings stay local in <code>config.json</code></li>
+        <li>Connection check covers SMB reachability, a real write-permission test on the share, and a free-space report</li>
+        <li>Parses messy file names into Plex's <code>Movie (Year)</code> and <code>Show — s01e01</code> structures; subtitle and metadata sidecar files are renamed and moved with their media</li>
+        <li>Dry-run by default: the organizer prints its full plan, and only <code>--apply</code> (or the desktop confirm) commits it</li>
+        <li>Uses UNC paths rather than mapped drives throughout, so the Plex service always sees the library</li>
+        <li>Point it at the Plex server (URL + token) and it becomes a library browser — cover art, categories, and name search across everything Plex has catalogued</li>
+        <li>The Android app pairs with the desktop app over home Wi-Fi by entering the address the desktop shows — no cloud account involved</li>
+        <li>Packaged as a standalone Windows <code>.exe</code>; all settings stay local in <code>config.json</code></li>
       </ul>
       <div class="tags">
         <span>Python</span><span>HTTP Server</span><span>Android</span><span>SMB / NAS</span><span>Plex API</span><span>PyInstaller</span>
