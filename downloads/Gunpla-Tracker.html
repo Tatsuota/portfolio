@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gunpla Tracker</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2064%2064%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230f172a%22%2F%3E%3Cpath%20d%3D%22M32%2030%20L10%2014%20L16%2012%20L32%2024%20Z%22%20fill%3D%22%23fbbf24%22%2F%3E%3Cpath%20d%3D%22M32%2030%20L54%2014%20L48%2012%20L32%2024%20Z%22%20fill%3D%22%23fbbf24%22%2F%3E%3Crect%20x%3D%2229%22%20y%3D%2224%22%20width%3D%226%22%20height%3D%227%22%20rx%3D%221%22%20fill%3D%22%23ef4444%22%2F%3E%3Cpath%20d%3D%22M24%2034%20h16%20v8%20l-8%206%20l-8%20-6%20Z%22%20fill%3D%22%23e2e8f0%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%2237%22%20width%3D%225%22%20height%3D%223%22%20fill%3D%22%2334d399%22%2F%3E%3Crect%20x%3D%2233%22%20y%3D%2237%22%20width%3D%225%22%20height%3D%223%22%20fill%3D%22%2334d399%22%2F%3E%3C%2Fsvg%3E">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f1f5f9;
+    --bg-tertiary: #e9eef5;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --accent: #6366f1;
+    --danger: #dc2626;
+    --radius-lg: 14px;
+    --radius-md: 9px;
+    --border: rgba(15,23,42,0.10);
+    --border-md: rgba(15,23,42,0.18);
+    --shadow: 0 4px 18px rgba(15,23,42,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #161b26;
+      --bg-secondary: #1e2534;
+      --bg-tertiary: #0f131c;
+      --text-primary: #eef1f6;
+      --text-secondary: #94a3b8;
+      --accent: #818cf8;
+      --danger: #f87171;
+      --border: rgba(255,255,255,0.09);
+      --border-md: rgba(255,255,255,0.17);
+      --shadow: 0 4px 18px rgba(0,0,0,0.35);
+    }
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-tertiary); color: var(--text-primary); min-height: 100vh; }
+  body:has(.detail-page.open), body:has(.modal-overlay.open), body:has(.lightbox.open) { overflow: hidden; }
+  .app { max-width: 1180px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .h1-left { display: flex; align-items: center; gap: 10px; }
+  h1 .brand { color: var(--accent); }
+  .h1-actions { display: flex; gap: 8px; align-items: center; }
+  .collection-stats { font-size: 12px; color: var(--text-secondary); margin-bottom: 18px; }
+
+  .icon-btn { width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; font-size: 16px; transition: all 0.15s; }
+  .icon-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .add-btn { height: 36px; padding: 0 16px; display: flex; align-items: center; gap: 6px; border-radius: 99px; border: none; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; transition: filter 0.15s; }
+  .add-btn:hover { filter: brightness(1.08); }
+
+  .search-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .search-input { flex: 1; height: 38px; padding: 0 14px; font-size: 13px; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-primary); outline: none; }
+  .search-input:focus { border-color: var(--accent); }
+
+  .grade-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: thin; }
+  .grade-tab { flex-shrink: 0; padding: 6px 14px; font-size: 12px; font-weight: 600; border: 0.5px solid var(--border-md); border-radius: 99px; cursor: pointer; background: var(--bg-primary); color: var(--text-secondary); white-space: nowrap; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+  .grade-tab .dot { width: 8px; height: 8px; border-radius: 99px; display: inline-block; }
+  .grade-tab .cnt { font-weight: 500; opacity: 0.7; font-size: 11px; }
+  .grade-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .grade-tab.active .dot { background: #fff !important; }
+
+  .status-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
+  .status-chip-btn { padding: 4px 12px; font-size: 11px; font-weight: 500; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .status-chip-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .grade-section { margin-bottom: 28px; }
+  .grade-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .grade-header .bar { width: 5px; height: 20px; border-radius: 3px; align-self: center; }
+  .grade-header h2 { font-size: 16px; font-weight: 600; }
+  .grade-header .full { font-size: 12px; color: var(--text-secondary); font-weight: 400; }
+  .grade-header .count-badge { font-size: 11px; color: var(--text-secondary); background: var(--bg-secondary); padding: 3px 10px; border-radius: 99px; border: 0.5px solid var(--border); margin-left: auto; }
+
+  .kit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; }
+
+  .kit-card { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+  .kit-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--border-md); }
+  .kit-cover { position: relative; width: 100%; aspect-ratio: 4/3; background: var(--bg-secondary); overflow: hidden; flex-shrink: 0; }
+  .kit-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .grade-chip { position: absolute; top: 8px; left: 8px; color: #fff; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 99px; letter-spacing: 0.04em; box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
+  .status-tag { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.72); color: #fff; font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 99px; }
+  .kit-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .kit-name { font-size: 13px; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .kit-sub { font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .empty { text-align: center; padding: 4rem 1rem; color: var(--text-secondary); font-size: 13px; }
+  .empty .big { font-size: 46px; display: block; margin-bottom: 12px; }
+  .empty h3 { color: var(--text-primary); font-size: 17px; margin-bottom: 6px; }
+  .empty p { max-width: 400px; margin: 0 auto 18px; line-height: 1.5; }
+  .empty-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .ghost-btn { padding: 8px 18px; font-size: 13px; font-weight: 500; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .ghost-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ---------- Detail page ---------- */
+  .detail-page { position: fixed; inset: 0; background: var(--bg-tertiary); z-index: 60; display: none; overflow-y: auto; overscroll-behavior: contain; }
+  .detail-page.open { display: block; }
+  .detail-inner { max-width: 900px; margin: 0 auto; padding: 18px 20px 80px; }
+  .detail-topbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; position: sticky; top: 0; padding: 8px 0; background: var(--bg-tertiary); z-index: 5; }
+  .back-btn { display: flex; align-items: center; gap: 6px; padding: 7px 15px; font-size: 13px; font-weight: 500; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .back-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .detail-actions { display: flex; gap: 8px; }
+
+  .detail-hero { border-radius: var(--radius-lg); overflow: hidden; border: 0.5px solid var(--border); background: var(--bg-primary); margin-bottom: 18px; }
+  .detail-boxart { width: 100%; max-height: 400px; object-fit: contain; display: block; background: var(--bg-secondary); cursor: zoom-in; }
+  .detail-head { padding: 16px 18px 18px; }
+  .detail-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .badge { font-size: 11px; font-weight: 700; padding: 4px 11px; border-radius: 99px; color: #fff; letter-spacing: 0.03em; }
+  .badge.soft { background: var(--bg-secondary); color: var(--text-secondary); border: 0.5px solid var(--border); font-weight: 500; }
+  .detail-title { font-size: 21px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+  .detail-series { font-size: 13px; color: var(--text-secondary); }
+  .status-picker { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .status-pick { padding: 5px 13px; font-size: 12px; font-weight: 500; border-radius: 99px; border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .status-pick.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .detail-section { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 14px; }
+  .detail-section h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+  .detail-desc { font-size: 13.5px; line-height: 1.65; color: var(--text-primary); white-space: pre-wrap; }
+  .muted-note { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .photo-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); border: 0.5px solid var(--border); cursor: zoom-in; transition: transform 0.15s; }
+  .photo-grid img:hover { transform: scale(1.03); }
+
+  .dl-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .dl-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; font-size: 13px; font-weight: 600; border-radius: var(--radius-md); border: none; background: var(--accent); color: #fff; cursor: pointer; text-decoration: none; transition: filter 0.15s; }
+  .dl-btn:hover { filter: brightness(1.08); }
+  .dl-btn.secondary { background: var(--bg-secondary); color: var(--text-primary); border: 0.5px solid var(--border-md); }
+  .dl-btn small { font-weight: 400; opacity: 0.8; }
+
+  .region-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; }
+  .region-tab { flex-shrink: 0; padding: 6px 14px; font-size: 12px; font-weight: 500; border: 0.5px solid var(--border-md); border-radius: 99px; cursor: pointer; background: var(--bg-primary); color: var(--text-secondary); white-space: nowrap; transition: all 0.15s; }
+  .region-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .store-list { display: flex; flex-direction: column; gap: 7px; }
+  .store-link { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: var(--bg-secondary); text-decoration: none; color: var(--text-primary); font-size: 13px; font-weight: 500; transition: border-color 0.15s; }
+  .store-link:hover { border-color: var(--accent); }
+  .store-link .arrow { color: var(--text-secondary); font-size: 12px; }
+  .store-link .tag { font-size: 10px; font-weight: 600; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 2px 8px; border-radius: 99px; }
+  .store-sub { font-size: 11px; color: var(--text-secondary); margin: 10px 0 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ---------- Modals ---------- */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; z-index: 100; overflow-y: auto; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg-primary); border: 0.5px solid var(--border-md); border-radius: var(--radius-lg); width: 100%; max-width: 560px; padding: 20px; margin: auto 0; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .modal-header h2 { font-size: 17px; font-weight: 600; }
+  .modal-close { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 22px; line-height: 1; padding: 0; }
+  .modal-close:hover { color: var(--text-primary); }
+
+  .form-block { margin-bottom: 16px; }
+  .form-label { font-size: 12.5px; font-weight: 600; margin-bottom: 5px; display: block; }
+  .form-label .opt { font-weight: 400; color: var(--text-secondary); }
+  .form-hint { font-size: 11px; color: var(--text-secondary); margin-top: 5px; line-height: 1.45; }
+  .text-input, .select-input, .textarea-input { width: 100%; padding: 9px 12px; font-size: 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border-md); background: var(--bg-secondary); color: var(--text-primary); outline: none; font-family: inherit; }
+  .text-input:focus, .select-input:focus, .textarea-input:focus { border-color: var(--accent); }
+  .textarea-input { min-height: 90px; resize: vertical; }
+  .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .form-2col { grid-template-columns: 1fr; } }
+
+  .upload-zone { border: 1.5px dashed var(--border-md); border-radius: var(--radius-md); padding: 14px; text-align: center; font-size: 12.5px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; background: var(--bg-secondary); }
+  .upload-zone:hover { border-color: var(--accent); color: var(--accent); }
+  .boxart-preview { position: relative; margin-top: 10px; display: none; }
+  .boxart-preview img { width: 100%; max-height: 220px; object-fit: contain; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: var(--bg-secondary); }
+  .thumb-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .thumb { position: relative; width: 76px; height: 76px; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 0.5px solid var(--border); }
+  .thumb .rm, .boxart-preview .rm { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; border-radius: 99px; border: none; background: var(--danger); color: #fff; font-size: 13px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .file-chip { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: var(--radius-md); background: var(--bg-secondary); border: 0.5px solid var(--border); font-size: 12.5px; margin-top: 8px; }
+  .file-chip .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-chip .size { color: var(--text-secondary); font-size: 11px; }
+  .file-chip .rm-inline { border: none; background: none; color: var(--danger); cursor: pointer; font-size: 15px; }
+
+  .link-row { display: grid; grid-template-columns: 108px 1fr 1.4fr 28px; gap: 6px; margin-bottom: 7px; align-items: center; }
+  .link-row .rm-inline { border: none; background: none; color: var(--danger); cursor: pointer; font-size: 16px; }
+  @media (max-width: 520px) { .link-row { grid-template-columns: 90px 1fr 24px; } .link-row .link-url { grid-column: 1 / 3; } }
+
+  .modal-footer { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 20px; }
+  .save-btn { padding: 9px 24px; font-size: 13px; font-weight: 600; border-radius: 99px; border: none; background: var(--accent); color: #fff; cursor: pointer; transition: filter 0.15s; }
+  .save-btn:hover { filter: brightness(1.08); }
+  .danger-btn { padding: 7px 15px; font-size: 12px; font-weight: 600; border-radius: 99px; border: 0.5px solid var(--danger); background: transparent; color: var(--danger); cursor: pointer; transition: all 0.15s; }
+  .danger-btn:hover { background: var(--danger); color: #fff; }
+
+  .setting-block { margin-bottom: 18px; }
+  .setting-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .setting-desc { font-size: 11.5px; color: var(--text-secondary); margin-bottom: 9px; line-height: 1.5; }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96%; max-height: 92%; object-fit: contain; border-radius: 6px; }
+  .lightbox .lb-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: #fff; font-size: 30px; cursor: pointer; opacity: 0.8; }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text-primary); color: var(--bg-primary); font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 99px; z-index: 300; transition: transform 0.25s; box-shadow: var(--shadow); max-width: 90vw; text-align: center; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>
+    <span class="h1-left">🤖 <span><span class="brand">Gunpla</span> Tracker</span></span>
+    <span class="h1-actions">
+      <button class="icon-btn" id="settingsBtn" title="Settings, export &amp; import" aria-label="Settings">⚙️</button>
+      <button class="add-btn" id="addBtn">＋ Add kit</button>
+    </span>
+  </h1>
+  <div class="collection-stats" id="collectionStats"></div>
+
+  <div class="search-row">
+    <input type="search" class="search-input" id="searchInput" placeholder="Search kits by name, series, or notes…">
+  </div>
+  <div class="grade-tabs" id="gradeTabs"></div>
+  <div class="status-chips" id="statusChips"></div>
+
+  <div id="content"></div>
+</div>
+
+<!-- ---------- Detail page ---------- -->
+<div class="detail-page" id="detailPage">
+  <div class="detail-inner">
+    <div class="detail-topbar">
+      <button class="back-btn" onclick="closeDetail()">‹ Back to collection</button>
+      <span class="detail-actions">
+        <button class="icon-btn" title="Edit kit" onclick="editFromDetail()">✏️</button>
+        <button class="icon-btn" title="Delete kit" onclick="deleteFromDetail()">🗑️</button>
+      </span>
+    </div>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<!-- ---------- Add / Edit modal ---------- -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="editTitle">Add a kit</h2>
+      <button class="modal-close" onclick="closeEdit()" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="form-block">
+      <label class="form-label" for="fName">Kit name</label>
+      <input class="text-input" id="fName" placeholder="e.g. RX-78-2 Gundam Ver. 3.0">
+    </div>
+    <div class="form-block form-2col">
+      <div>
+        <label class="form-label" for="fGrade">Grade</label>
+        <select class="select-input" id="fGrade"></select>
+      </div>
+      <div>
+        <label class="form-label" for="fScale">Scale</label>
+        <input class="text-input" id="fScale" placeholder="1/144">
+      </div>
+    </div>
+    <div class="form-block form-2col">
+      <div>
+        <label class="form-label" for="fSeries">Series <span class="opt">(optional)</span></label>
+        <input class="text-input" id="fSeries" placeholder="e.g. Mobile Suit Gundam SEED">
+      </div>
+      <div>
+        <label class="form-label" for="fStatus">Status</label>
+        <select class="select-input" id="fStatus"></select>
+      </div>
+    </div>
+
+    <div class="form-block">
+      <label class="form-label">Box art</label>
+      <div class="upload-zone" onclick="document.getElementById('fBoxArtFile').click()">📦 Click to upload a photo of the box cover</div>
+      <input type="file" id="fBoxArtFile" accept="image/*" hidden>
+      <input class="text-input" id="fBoxArtUrl" placeholder="…or paste an image URL" style="margin-top:8px">
+      <div class="boxart-preview" id="boxArtPreview">
+        <img id="boxArtPreviewImg" alt="Box art preview">
+        <button class="rm" onclick="clearBoxArt()" title="Remove">×</button>
+      </div>
+      <div class="form-hint">No image? A stylized cover is generated automatically from the kit's grade.</div>
+    </div>
+
+    <div class="form-block">
+      <label class="form-label" for="fDesc">Description <span class="opt">(optional)</span></label>
+      <textarea class="textarea-input" id="fDesc" placeholder="Notes about the kit — what's in the box, mods, paint plans, how the build went…"></textarea>
+    </div>
+
+    <div class="form-block">
+      <label class="form-label">Completed build photos <span class="opt">(optional)</span></label>
+      <div class="upload-zone" onclick="document.getElementById('fPhotosFile').click()">📸 Click to add photos of the finished build</div>
+      <input type="file" id="fPhotosFile" accept="image/*" multiple hidden>
+      <div class="thumb-strip" id="photoStrip"></div>
+    </div>
+
+    <div class="form-block">
+      <label class="form-label">Instruction manual <span class="opt">(optional)</span></label>
+      <div class="upload-zone" onclick="document.getElementById('fManualFile').click()">📄 Click to attach the instructions (PDF)</div>
+      <input type="file" id="fManualFile" accept="application/pdf,.pdf" hidden>
+      <div id="manualChip"></div>
+      <input class="text-input" id="fManualUrl" placeholder="…or paste a link to the manual online" style="margin-top:8px">
+      <div class="form-hint">Bandai publishes most manuals free at manual.bandai-hobby.net — the kit's page links a search for it automatically.</div>
+    </div>
+
+    <div class="form-block">
+      <label class="form-label">Your purchase links <span class="opt">(optional)</span></label>
+      <div id="linkRows"></div>
+      <button class="ghost-btn" style="padding:5px 14px;font-size:12px" onclick="addLinkRow()">＋ Add link</button>
+      <div class="form-hint">Store search links for each region are added automatically — use this for exact product pages you want to keep.</div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="ghost-btn" onclick="closeEdit()">Cancel</button>
+      <button class="save-btn" id="saveKitBtn" onclick="saveKit()">Save kit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- Settings modal ---------- -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <h2>⚙️ Settings</h2>
+      <button class="modal-close" onclick="closeSettings()" aria-label="Close">&times;</button>
+    </div>
+    <div class="setting-block">
+      <div class="setting-label">Backup &amp; transfer</div>
+      <div class="setting-desc">Your collection lives entirely on this device. Export it to a file to back it up or move it to the phone / desktop edition (images and attached manuals included).</div>
+      <div class="dl-row">
+        <button class="dl-btn" onclick="exportCollection()">⬇ Export collection</button>
+        <button class="dl-btn secondary" onclick="document.getElementById('importFile').click()">⬆ Import</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </div>
+    <div class="setting-block">
+      <div class="setting-label">Sample data</div>
+      <div class="setting-desc">Add a demo collection to see how the tracker looks. Sample kits can be deleted like any other.</div>
+      <button class="ghost-btn" style="font-size:12px" onclick="loadSamples()">Load sample collection</button>
+    </div>
+    <div class="setting-block">
+      <div class="setting-label">Danger zone</div>
+      <div class="setting-desc">Remove every kit from this device. This cannot be undone.</div>
+      <button class="danger-btn" onclick="clearAll()">Delete entire collection</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- Lightbox ---------- -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" aria-label="Close">×</button>
+  <img id="lightboxImg" alt="Full-size photo">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ==================== Constants ==================== */
+const GRADES = {
+  EG:    { label: 'EG',     full: 'Entry Grade',          scale: '1/144',     color: '#22c55e' },
+  HG:    { label: 'HG',     full: 'High Grade',           scale: '1/144',     color: '#38bdf8' },
+  RG:    { label: 'RG',     full: 'Real Grade',           scale: '1/144',     color: '#f43f5e' },
+  MG:    { label: 'MG',     full: 'Master Grade',         scale: '1/100',     color: '#fbbf24' },
+  MGEX:  { label: 'MGEX',   full: 'Master Grade Extreme', scale: '1/100',     color: '#a78bfa' },
+  FM:    { label: 'FM',     full: 'Full Mechanics',       scale: '1/100',     color: '#fb923c' },
+  RE100: { label: 'RE/100', full: 'Reborn-One Hundred',   scale: '1/100',     color: '#2dd4bf' },
+  PG:    { label: 'PG',     full: 'Perfect Grade',        scale: '1/60',      color: '#e879f9' },
+  SD:    { label: 'SD',     full: 'Super Deformed',       scale: 'Non-scale', color: '#f472b6' },
+  MGSD:  { label: 'MGSD',   full: 'Master Grade SD',      scale: 'Non-scale', color: '#c084fc' },
+  HIRM:  { label: 'HiRM',   full: 'Hi-Resolution Model',  scale: '1/100',     color: '#94a3b8' },
+  OTHER: { label: 'Other',  full: 'Other kits',           scale: '',          color: '#9ca3af' },
+};
+const GRADE_ORDER = Object.keys(GRADES);
+
+const STATUSES = {
+  backlog:  { label: 'Backlog',  icon: '📦', tag: '📦 Backlog'  },
+  building: { label: 'Building', icon: '🔧', tag: '🔧 Building' },
+  built:    { label: 'Built',    icon: '✅', tag: '✅ Built'    },
+  wishlist: { label: 'Wishlist', icon: '⭐', tag: '⭐ Wishlist' },
+};
+const STATUS_ORDER = ['backlog', 'building', 'built', 'wishlist'];
+
+const REGIONS = {
+  jp: { flag: '🇯🇵', label: 'Japan', stores: [
+    ['Amazon Japan',            'https://www.amazon.co.jp/s?k='],
+    ['HobbyLink Japan',         'https://www.hlj.com/search/?Word='],
+    ['AmiAmi',                  'https://www.amiami.com/eng/search/list/?s_keywords='],
+    ['HobbySearch (1999.co.jp)','https://www.1999.co.jp/eng/search?keyword='],
+    ['Premium Bandai',          'https://p-bandai.jp/search/?q='],
+  ], note: 'HobbyLink Japan, AmiAmi, and HobbySearch all ship internationally from Japan.' },
+  na: { flag: '🇺🇸', label: 'North America', stores: [
+    ['Amazon US',               'https://www.amazon.com/s?k='],
+    ['USA Gundam Store',        'https://www.usagundamstore.com/search?q='],
+    ['Gundam Planet',           'https://www.gundamplanet.com/catalogsearch/result/?q='],
+    ['Newtype',                 'https://newtype.us/search?q='],
+  ], note: '' },
+  eu: { flag: '🇪🇺', label: 'Europe', stores: [
+    ['Amazon UK',               'https://www.amazon.co.uk/s?k='],
+    ['Amazon Germany',          'https://www.amazon.de/s?k='],
+    ['eBay UK',                 'https://www.ebay.co.uk/sch/i.html?_nkw='],
+  ], note: 'Japanese shops on the Japan tab also ship to Europe, often cheaper for new releases.' },
+  ww: { flag: '🌐', label: 'Worldwide', stores: [
+    ['eBay',                    'https://www.ebay.com/sch/i.html?_nkw='],
+  ], note: 'For out-of-production or P-Bandai exclusives, eBay is usually the only option.' },
+};
+const REGION_ORDER = ['jp', 'na', 'eu', 'ww'];
+
+/* ==================== State ==================== */
+let kits = [];                 // full collection, in memory
+let filterGrade = 'all';
+let filterStatus = 'all';
+let searchQuery = '';
+let activeRegion = 'na';
+let detailId = null;           // kit currently shown in detail page
+let editingId = null;          // kit currently in the edit modal (null = adding)
+let editBoxArt = '';           // pending box art data URL / URL
+let editPhotos = [];           // pending photo data URLs
+let editManual = null;         // pending {name,size,type,blob}
+let navStack = [];             // overlay history for back-button support
+
+/* ==================== IndexedDB ==================== */
+let db = null;
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('gunpla-tracker', 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore('kits', { keyPath: 'id' }); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+function idbPut(kit) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('kits', 'readwrite');
+    tx.objectStore('kits').put(kit);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+function idbDelete(id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('kits', 'readwrite');
+    tx.objectStore('kits').delete(id);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+function idbAll() {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('kits', 'readonly');
+    const req = tx.objectStore('kits').getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+function idbClear() {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('kits', 'readwrite');
+    tx.objectStore('kits').clear();
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/* ==================== Helpers ==================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const fmtSize = b => b >= 1048576 ? (b/1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b/1024)) + ' KB';
+const gradeOf = k => GRADES[k.grade] || GRADES.OTHER;
+
+let toastTimer = null;
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* Search term a store link should use, e.g. "MG Sazabi Ver.Ka gundam" */
+function searchTerm(kit) {
+  const g = gradeOf(kit);
+  const base = (g === GRADES.OTHER ? '' : g.label + ' ') + kit.name;
+  return encodeURIComponent(/gundam|gunpla/i.test(base) ? base : base + ' gundam');
+}
+
+/* ---------- Generated box art (used when no image is set) ---------- */
+function wrapName(name, max) {
+  const words = String(name).split(/\s+/);
+  const lines = [''];
+  for (const w of words) {
+    const cur = lines[lines.length - 1];
+    if (cur && (cur + ' ' + w).length > max) lines.push(w);
+    else lines[lines.length - 1] = cur ? cur + ' ' + w : w;
+  }
+  if (lines.length > 2) { lines[1] = lines.slice(1).join(' '); lines.length = 2; }
+  return lines.map(l => l.length > max + 4 ? l.slice(0, max + 1) + '…' : l);
+}
+function genBoxArt(kit) {
+  const g = gradeOf(kit);
+  const lines = wrapName(kit.name || 'Untitled kit', 22);
+  const nameSvg = lines.map((l, i) =>
+    `<text x="132" y="${lines.length === 1 ? 296 : 272 + i * 30}" font-size="25" font-weight="700" fill="#f1f5f9" font-family="Segoe UI,sans-serif">${esc(l)}</text>`).join('');
+  const svg =
+`<svg viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="${g.color}" stop-opacity="0.30"/>
+<stop offset="0.55" stop-color="#101726"/>
+<stop offset="1" stop-color="#0a0f1a"/>
+</linearGradient>
+</defs>
+<rect width="480" height="360" fill="url(#bg)"/>
+<rect width="96" height="360" fill="${g.color}"/>
+<text x="48" y="330" font-size="44" font-weight="800" fill="#0b1220" font-family="Segoe UI,sans-serif" transform="rotate(-90 48 330)" letter-spacing="2">${esc(g.label)}</text>
+<g transform="translate(240,88) scale(2.5)" opacity="0.92">
+<path d="M32 30 L10 14 L16 12 L32 24 Z" fill="#fbbf24"/>
+<path d="M32 30 L54 14 L48 12 L32 24 Z" fill="#fbbf24"/>
+<rect x="29" y="24" width="6" height="7" rx="1" fill="#ef4444"/>
+<path d="M24 34 h16 v8 l-8 6 l-8 -6 Z" fill="#e2e8f0"/>
+<rect x="26" y="37" width="5" height="3" fill="#34d399"/>
+<rect x="33" y="37" width="5" height="3" fill="#34d399"/>
+</g>
+<text x="132" y="236" font-size="13" font-weight="500" fill="#94a3b8" font-family="Segoe UI,sans-serif" letter-spacing="1">${esc((kit.series || g.full).toUpperCase())}</text>
+${nameSvg}
+<text x="132" y="330" font-size="14" font-weight="600" fill="${g.color}" font-family="Segoe UI,sans-serif">${esc(kit.scale || g.scale || '')}</text>
+<text x="464" y="330" font-size="11" font-weight="500" fill="#64748b" font-family="Segoe UI,sans-serif" text-anchor="end" letter-spacing="1">PLASTIC MODEL KIT</text>
+</svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+const coverSrc = kit => kit.boxArt || genBoxArt(kit);
+
+/* ---------- Image compression ---------- */
+function compressImage(file, maxW, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error);
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Not a readable image'));
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function blobToDataURL(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+function dataURLToBlob(dataURL) {
+  const [head, b64] = dataURL.split(',');
+  const mime = (head.match(/data:([^;]+)/) || [])[1] || 'application/octet-stream';
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+/* ---------- File download (desktop + Android bridge) ---------- */
+async function downloadBlob(blob, filename) {
+  if (window.GunplaBridge && GunplaBridge.saveFile) {
+    const dataURL = await blobToDataURL(blob);
+    GunplaBridge.saveFile(dataURL.split(',')[1], filename, blob.type || 'application/octet-stream');
+    return;
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+/* ==================== Overlay history (Android back button) ==================== */
+function navPush(name) {
+  navStack.push(name);
+  history.pushState({ overlay: name, depth: navStack.length }, '');
+}
+function closeOverlayDom(name) {
+  if (name === 'lightbox') $('lightbox').classList.remove('open');
+  else if (name === 'edit') $('editModal').classList.remove('open');
+  else if (name === 'settings') $('settingsModal').classList.remove('open');
+  else if (name === 'detail') { $('detailPage').classList.remove('open'); detailId = null; }
+}
+function navRemove(name) {
+  // Closing via UI button: consume the matching history entry. popstate does
+  // the actual close so the stack is only popped once.
+  if (navStack[navStack.length - 1] === name) { history.back(); return; }
+  const idx = navStack.lastIndexOf(name);
+  if (idx !== -1) navStack.splice(idx, 1);
+  closeOverlayDom(name);
+}
+window.addEventListener('popstate', () => {
+  const name = navStack.pop();
+  if (name) closeOverlayDom(name);
+});
+
+/* ==================== Main rendering ==================== */
+function visibleKits() {
+  const q = searchQuery.trim().toLowerCase();
+  return kits.filter(k =>
+    (filterGrade === 'all' || k.grade === filterGrade) &&
+    (filterStatus === 'all' || k.status === filterStatus) &&
+    (!q || [k.name, k.series, k.desc, gradeOf(k).full].join(' ').toLowerCase().includes(q))
+  );
+}
+
+function renderStats() {
+  const built = kits.filter(k => k.status === 'built').length;
+  const wish = kits.filter(k => k.status === 'wishlist').length;
+  $('collectionStats').textContent = kits.length
+    ? `${kits.length} kit${kits.length === 1 ? '' : 's'} in your collection · ${built} built${wish ? ` · ${wish} on the wishlist` : ''}`
+    : 'Your Gundam model kit collection, on this device.';
+}
+
+function renderTabs() {
+  const counts = {};
+  kits.forEach(k => counts[k.grade] = (counts[k.grade] || 0) + 1);
+  let html = `<button class="grade-tab${filterGrade === 'all' ? ' active' : ''}" onclick="setGrade('all')">All <span class="cnt">${kits.length}</span></button>`;
+  for (const g of GRADE_ORDER) {
+    if (!counts[g]) continue;
+    html += `<button class="grade-tab${filterGrade === g ? ' active' : ''}" onclick="setGrade('${g}')">` +
+      `<span class="dot" style="background:${GRADES[g].color}"></span>${GRADES[g].label} <span class="cnt">${counts[g]}</span></button>`;
+  }
+  $('gradeTabs').innerHTML = html;
+
+  let chips = `<button class="status-chip-btn${filterStatus === 'all' ? ' active' : ''}" onclick="setStatus('all')">All statuses</button>`;
+  for (const s of STATUS_ORDER) {
+    const n = kits.filter(k => k.status === s).length;
+    if (!n) continue;
+    chips += `<button class="status-chip-btn${filterStatus === s ? ' active' : ''}" onclick="setStatus('${s}')">${STATUSES[s].icon} ${STATUSES[s].label} (${n})</button>`;
+  }
+  $('statusChips').innerHTML = chips;
+}
+
+function cardHTML(kit) {
+  const g = gradeOf(kit);
+  const st = STATUSES[kit.status] || STATUSES.backlog;
+  return `<div class="kit-card" onclick="openDetail('${kit.id}')">
+    <div class="kit-cover">
+      <img src="${coverSrc(kit)}" alt="${esc(kit.name)} box art" loading="lazy">
+      <span class="grade-chip" style="background:${g.color}">${esc(g.label)}</span>
+      <span class="status-tag">${st.tag}</span>
+    </div>
+    <div class="kit-body">
+      <p class="kit-name">${esc(kit.name)}</p>
+      <p class="kit-sub">${esc([kit.scale || g.scale, kit.series].filter(Boolean).join(' · ') || g.full)}</p>
+    </div>
+  </div>`;
+}
+
+function render() {
+  renderStats();
+  renderTabs();
+  const el = $('content');
+
+  if (!kits.length) {
+    el.innerHTML = `<div class="empty">
+      <span class="big">🤖</span>
+      <h3>No kits yet</h3>
+      <p>Add your first Gundam kit — snap a photo of the box art, pick its grade, and it lands on the shelf here.</p>
+      <div class="empty-actions">
+        <button class="add-btn" onclick="openAdd()">＋ Add your first kit</button>
+        <button class="ghost-btn" onclick="loadSamples()">Load sample collection</button>
+      </div>
+    </div>`;
+    return;
+  }
+
+  const shown = visibleKits();
+  if (!shown.length) {
+    el.innerHTML = `<div class="empty"><span class="big">🔍</span><h3>No kits match</h3><p>Try a different search, grade, or status filter.</p></div>`;
+    return;
+  }
+
+  // Group by grade, newest first inside each group
+  let html = '';
+  for (const g of GRADE_ORDER) {
+    const group = shown.filter(k => k.grade === g).sort((a, b) => (b.added || 0) - (a.added || 0));
+    if (!group.length) continue;
+    html += `<section class="grade-section">
+      <div class="grade-header">
+        <span class="bar" style="background:${GRADES[g].color}"></span>
+        <h2>${esc(GRADES[g].label)}</h2>
+        <span class="full">${esc(GRADES[g].full)}${GRADES[g].scale ? ' · ' + GRADES[g].scale : ''}</span>
+        <span class="count-badge">${group.length} kit${group.length === 1 ? '' : 's'}</span>
+      </div>
+      <div class="kit-grid">${group.map(cardHTML).join('')}</div>
+    </section>`;
+  }
+  el.innerHTML = html;
+}
+
+function setGrade(g) { filterGrade = g; render(); }
+function setStatus(s) { filterStatus = s; render(); }
+
+/* ==================== Detail page ==================== */
+function openDetail(id) {
+  detailId = id;
+  renderDetail();
+  $('detailPage').classList.add('open');
+  $('detailPage').scrollTop = 0;
+  navPush('detail');
+}
+function closeDetail() { navRemove('detail'); }
+
+function renderDetail() {
+  const kit = kits.find(k => k.id === detailId);
+  if (!kit) return;
+  const g = gradeOf(kit);
+
+  const statusPicker = STATUS_ORDER.map(s =>
+    `<button class="status-pick${kit.status === s ? ' active' : ''}" onclick="quickStatus('${s}')">${STATUSES[s].icon} ${STATUSES[s].label}</button>`).join('');
+
+  const photos = (kit.photos || []).map((p, i) =>
+    `<img src="${p}" alt="Completed build photo ${i + 1}" loading="lazy" onclick="openLightbox('${kit.id}',${i})">`).join('');
+
+  // Instructions section
+  let manual = '';
+  if (kit.manual) {
+    manual += `<div class="dl-row"><button class="dl-btn" onclick="downloadManual()">📄 Download instructions <small>PDF · ${fmtSize(kit.manual.size || (kit.manual.blob && kit.manual.blob.size) || 0)}</small></button></div>`;
+  }
+  if (kit.manualUrl) {
+    manual += `<div class="dl-row"><a class="dl-btn secondary" href="${esc(kit.manualUrl)}" target="_blank" rel="noopener">🔗 Open manual online</a></div>`;
+  }
+  manual += `<div class="dl-row"><a class="dl-btn secondary" href="https://www.google.com/search?q=${encodeURIComponent('site:manual.bandai-hobby.net ' + kit.name)}" target="_blank" rel="noopener">🔎 Find it in Bandai's official manual library</a></div>`;
+  if (!kit.manual && !kit.manualUrl) {
+    manual += `<p class="muted-note">No manual attached yet — edit the kit to attach the PDF, or use the search above: Bandai publishes most kit instructions for free.</p>`;
+  }
+
+  $('detailBody').innerHTML = `
+    <div class="detail-hero">
+      <img class="detail-boxart" src="${coverSrc(kit)}" alt="${esc(kit.name)} box art" onclick="openLightbox('${kit.id}',-1)" style="background:linear-gradient(160deg, ${g.color}22, transparent 60%), var(--bg-secondary)">
+      <div class="detail-head">
+        <div class="detail-badges">
+          <span class="badge" style="background:${g.color}">${esc(g.label)} · ${esc(g.full)}</span>
+          ${kit.scale || g.scale ? `<span class="badge soft">${esc(kit.scale || g.scale)}</span>` : ''}
+        </div>
+        <div class="detail-title">${esc(kit.name)}</div>
+        ${kit.series ? `<div class="detail-series">${esc(kit.series)}</div>` : ''}
+        <div class="status-picker">${statusPicker}</div>
+      </div>
+    </div>
+
+    ${kit.desc ? `<div class="detail-section"><h3>📝 About this kit</h3><p class="detail-desc">${esc(kit.desc)}</p></div>` : ''}
+
+    <div class="detail-section">
+      <h3>📸 Completed build</h3>
+      ${photos ? `<div class="photo-grid">${photos}</div>`
+               : `<p class="muted-note">No build photos yet — once it's off the runners, edit the kit and add shots of the finished build.</p>`}
+    </div>
+
+    <div class="detail-section">
+      <h3>📄 Instructions</h3>
+      ${manual}
+    </div>
+
+    <div class="detail-section">
+      <h3>🛒 Where to buy</h3>
+      <div class="region-tabs">${REGION_ORDER.map(r =>
+        `<button class="region-tab${activeRegion === r ? ' active' : ''}" onclick="setRegion('${r}')">${REGIONS[r].flag} ${REGIONS[r].label}</button>`).join('')}
+      </div>
+      <div id="storeList">${storeListHTML(kit)}</div>
+    </div>`;
+}
+
+function storeListHTML(kit) {
+  const region = REGIONS[activeRegion];
+  const custom = (kit.links || []).filter(l => l.region === activeRegion && l.url);
+  let html = '';
+  if (custom.length) {
+    html += `<div class="store-sub">Your links</div><div class="store-list">` +
+      custom.map(l => `<a class="store-link" href="${esc(l.url)}" target="_blank" rel="noopener"><span>${esc(l.label || l.url)}</span><span class="tag">saved</span></a>`).join('') + `</div>`;
+  }
+  html += `${custom.length ? `<div class="store-sub">Search stores</div>` : ''}<div class="store-list">` +
+    region.stores.map(([name, base]) =>
+      `<a class="store-link" href="${base}${searchTerm(kit)}" target="_blank" rel="noopener"><span>${esc(name)}</span><span class="arrow">Search for this kit ›</span></a>`).join('') + `</div>`;
+  if (region.note) html += `<p class="muted-note" style="margin-top:10px">${region.note}</p>`;
+  return html;
+}
+function setRegion(r) {
+  activeRegion = r;
+  const kit = kits.find(k => k.id === detailId);
+  if (!kit) return;
+  document.querySelectorAll('.region-tab').forEach((el, i) => el.classList.toggle('active', REGION_ORDER[i] === r));
+  $('storeList').innerHTML = storeListHTML(kit);
+}
+
+async function quickStatus(s) {
+  const kit = kits.find(k => k.id === detailId);
+  if (!kit) return;
+  kit.status = s;
+  await idbPut(kit);
+  renderDetail();
+  render();
+}
+
+async function downloadManual() {
+  const kit = kits.find(k => k.id === detailId);
+  if (!kit || !kit.manual || !kit.manual.blob) return;
+  const safe = kit.name.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'kit';
+  await downloadBlob(kit.manual.blob, `${gradeOf(kit).label}-${safe}-instructions.pdf`);
+  toast('Instructions saved 📄');
+}
+
+function editFromDetail() { const kit = kits.find(k => k.id === detailId); if (kit) openEdit(kit); }
+async function deleteFromDetail() {
+  const kit = kits.find(k => k.id === detailId);
+  if (!kit) return;
+  if (!confirm(`Delete "${kit.name}" from your collection?`)) return;
+  await idbDelete(kit.id);
+  kits = kits.filter(k => k.id !== kit.id);
+  closeDetail();
+  render();
+  toast('Kit deleted');
+}
+
+/* ==================== Lightbox ==================== */
+function openLightbox(kitId, photoIdx) {
+  const kit = kits.find(k => k.id === kitId);
+  if (!kit) return;
+  $('lightboxImg').src = photoIdx === -1 ? coverSrc(kit) : (kit.photos || [])[photoIdx];
+  $('lightbox').classList.add('open');
+  navPush('lightbox');
+}
+function closeLightbox() { navRemove('lightbox'); }
+
+/* ==================== Add / Edit ==================== */
+function buildFormOptions() {
+  $('fGrade').innerHTML = GRADE_ORDER.map(g =>
+    `<option value="${g}">${GRADES[g].label} — ${GRADES[g].full}</option>`).join('');
+  $('fStatus').innerHTML = STATUS_ORDER.map(s =>
+    `<option value="${s}">${STATUSES[s].icon} ${STATUSES[s].label}</option>`).join('');
+}
+
+function openAdd() { openEdit(null); }
+function openEdit(kit) {
+  editingId = kit ? kit.id : null;
+  $('editTitle').textContent = kit ? 'Edit kit' : 'Add a kit';
+  $('saveKitBtn').textContent = kit ? 'Save changes' : 'Save kit';
+  $('fName').value = kit ? kit.name : '';
+  $('fGrade').value = kit ? (GRADES[kit.grade] ? kit.grade : 'OTHER') : 'HG';
+  $('fScale').value = kit ? (kit.scale || '') : GRADES.HG.scale;
+  $('fSeries').value = kit ? (kit.series || '') : '';
+  $('fStatus').value = kit ? kit.status : 'backlog';
+  $('fDesc').value = kit ? (kit.desc || '') : '';
+  $('fManualUrl').value = kit ? (kit.manualUrl || '') : '';
+  $('fBoxArtUrl').value = kit && kit.boxArt && !kit.boxArt.startsWith('data:') ? kit.boxArt : '';
+  editBoxArt = kit ? (kit.boxArt || '') : '';
+  editPhotos = kit ? [...(kit.photos || [])] : [];
+  editManual = kit && kit.manual ? { ...kit.manual } : null;
+  renderBoxArtPreview();
+  renderPhotoStrip();
+  renderManualChip();
+  $('linkRows').innerHTML = '';
+  (kit && kit.links ? kit.links : []).forEach(l => addLinkRow(l));
+  $('editModal').classList.add('open');
+  navPush('edit');
+}
+function closeEdit() { navRemove('edit'); }
+
+function renderBoxArtPreview() {
+  const has = !!editBoxArt;
+  $('boxArtPreview').style.display = has ? 'block' : 'none';
+  if (has) $('boxArtPreviewImg').src = editBoxArt;
+}
+function clearBoxArt() { editBoxArt = ''; $('fBoxArtUrl').value = ''; renderBoxArtPreview(); }
+
+function renderPhotoStrip() {
+  $('photoStrip').innerHTML = editPhotos.map((p, i) =>
+    `<span class="thumb"><img src="${p}" alt="Photo ${i + 1}"><button class="rm" onclick="removePhoto(${i})" title="Remove">×</button></span>`).join('');
+}
+function removePhoto(i) { editPhotos.splice(i, 1); renderPhotoStrip(); }
+
+function renderManualChip() {
+  $('manualChip').innerHTML = editManual
+    ? `<div class="file-chip">📄 <span class="name">${esc(editManual.name)}</span><span class="size">${fmtSize(editManual.size)}</span><button class="rm-inline" onclick="removeManual()" title="Remove">×</button></div>`
+    : '';
+}
+function removeManual() { editManual = null; $('fManualFile').value = ''; renderManualChip(); }
+
+function addLinkRow(link) {
+  const row = document.createElement('div');
+  row.className = 'link-row';
+  row.innerHTML = `
+    <select class="select-input link-region">${REGION_ORDER.map(r =>
+      `<option value="${r}"${link && link.region === r ? ' selected' : ''}>${REGIONS[r].flag} ${REGIONS[r].label}</option>`).join('')}</select>
+    <input class="text-input link-label" placeholder="Store name" value="${link ? esc(link.label || '') : ''}">
+    <input class="text-input link-url" placeholder="https://…" value="${link ? esc(link.url || '') : ''}">
+    <button class="rm-inline" onclick="this.parentElement.remove()" title="Remove">×</button>`;
+  $('linkRows').appendChild(row);
+}
+
+async function saveKit() {
+  const name = $('fName').value.trim();
+  if (!name) { toast('Give the kit a name first'); $('fName').focus(); return; }
+  const urlArt = $('fBoxArtUrl').value.trim();
+  if (urlArt && !editBoxArt.startsWith('data:')) editBoxArt = urlArt;
+
+  const links = [...document.querySelectorAll('#linkRows .link-row')].map(r => ({
+    region: r.querySelector('.link-region').value,
+    label: r.querySelector('.link-label').value.trim(),
+    url: r.querySelector('.link-url').value.trim(),
+  })).filter(l => l.url);
+
+  const existing = editingId ? kits.find(k => k.id === editingId) : null;
+  const kit = {
+    id: editingId || uid(),
+    name,
+    grade: $('fGrade').value,
+    scale: $('fScale').value.trim(),
+    series: $('fSeries').value.trim(),
+    status: $('fStatus').value,
+    desc: $('fDesc').value.trim(),
+    boxArt: editBoxArt,
+    photos: editPhotos,
+    manual: editManual,
+    manualUrl: $('fManualUrl').value.trim(),
+    links,
+    added: existing ? existing.added : Date.now(),
+  };
+  await idbPut(kit);
+  if (existing) Object.assign(existing, kit);
+  else kits.push(kit);
+  closeEdit();
+  render();
+  if (detailId === kit.id) renderDetail();
+  toast(existing ? 'Kit updated ✅' : 'Kit added to your collection ✅');
+}
+
+/* ==================== Settings / export / import ==================== */
+function openSettings() { $('settingsModal').classList.add('open'); navPush('settings'); }
+function closeSettings() { navRemove('settings'); }
+
+async function exportCollection() {
+  const out = [];
+  for (const kit of kits) {
+    const copy = { ...kit };
+    if (kit.manual && kit.manual.blob) {
+      copy.manual = { name: kit.manual.name, size: kit.manual.size, type: kit.manual.type, data: await blobToDataURL(kit.manual.blob) };
+    }
+    out.push(copy);
+  }
+  const blob = new Blob([JSON.stringify({ app: 'gunpla-tracker', version: 1, exported: new Date().toISOString(), kits: out }, null, 1)], { type: 'application/json' });
+  await downloadBlob(blob, `gunpla-collection-${new Date().toISOString().slice(0, 10)}.json`);
+  toast(`Exported ${kits.length} kit${kits.length === 1 ? '' : 's'} ⬇`);
+}
+
+async function importCollection(file) {
+  try {
+    const data = JSON.parse(await file.text());
+    const list = Array.isArray(data) ? data : data.kits;
+    if (!Array.isArray(list)) throw new Error('bad format');
+    let added = 0, updated = 0;
+    for (const raw of list) {
+      if (!raw || !raw.name) continue;
+      const kit = { ...raw };
+      kit.id = kit.id || uid();
+      kit.grade = GRADES[kit.grade] ? kit.grade : 'OTHER';
+      kit.status = STATUSES[kit.status] ? kit.status : 'backlog';
+      kit.photos = Array.isArray(kit.photos) ? kit.photos : [];
+      kit.links = Array.isArray(kit.links) ? kit.links : [];
+      if (kit.manual && kit.manual.data) {
+        kit.manual = { name: kit.manual.name, size: kit.manual.size, type: kit.manual.type, blob: dataURLToBlob(kit.manual.data) };
+      } else if (kit.manual && !kit.manual.blob) kit.manual = null;
+      await idbPut(kit);
+      const i = kits.findIndex(k => k.id === kit.id);
+      if (i >= 0) { kits[i] = kit; updated++; } else { kits.push(kit); added++; }
+    }
+    render();
+    toast(`Imported ${added} new kit${added === 1 ? '' : 's'}${updated ? `, updated ${updated}` : ''} ✅`);
+  } catch (e) {
+    toast('That file is not a Gunpla Tracker export ❌');
+  }
+}
+
+async function clearAll() {
+  if (!confirm(`Delete all ${kits.length} kits? This cannot be undone.`)) return;
+  await idbClear();
+  kits = [];
+  closeSettings();
+  render();
+  toast('Collection cleared');
+}
+
+/* ==================== Sample collection ==================== */
+const SAMPLE_KITS = [
+  { name: 'RX-78-2 Gundam', grade: 'RG', series: 'Mobile Suit Gundam', status: 'built',
+    desc: 'The one that started it all. The RG frame packs MG-level detail into 1/144 — the inner skeleton is fully articulated, and the color separation is superb straight off the runners. Panel-lined with a Gundam Marker and finished with the included realistic decals.' },
+  { name: 'Sazabi Ver.Ka', grade: 'MG', series: "Char's Counterattack", status: 'building',
+    desc: "Katoki's masterpiece. Enormous kit — the funnels alone take an evening. Building it armor-off first to enjoy the full inner frame, then deciding whether to commit to a metallic red paint job or keep it clean with just decals." },
+  { name: 'Gundam Aerial', grade: 'HG', series: 'The Witch from Mercury', status: 'built',
+    desc: 'The shell unit parts use clear layered plastic that catches light like the show. Great modern HG engineering — almost no seams, and the water-slide-style stickers went on cleanly.' },
+  { name: 'Unicorn Gundam', grade: 'PG', series: 'Mobile Suit Gundam Unicorn', status: 'backlog',
+    desc: 'The grail kit. Full psycho-frame transformation between Unicorn and Destroy modes, plus the LED unit set. Waiting for a free month before starting this one — the box weighs more than a small dog.' },
+  { name: 'Freedom Gundam Ver. 2.0', grade: 'MG', series: 'Mobile Suit Gundam SEED', status: 'built',
+    desc: 'The 2.0 fixes everything about the original — modern proportions, full wing articulation for the HiMAT pose. Balancing it on the stand with wings deployed took longer than some whole builds.' },
+  { name: 'Gundam Barbatos', grade: 'SD', series: 'Iron-Blooded Orphans', status: 'built',
+    desc: 'Ex-Standard Barbatos — a quick weekend palate cleanser between bigger builds. The mace is nearly as big as the kit itself.' },
+  { name: 'ν Gundam Ver.Ka', grade: 'RG', series: "Char's Counterattack", status: 'backlog',
+    desc: 'The fin funnel effect is unmatched at this scale. Bought at the Gundam Base in Odaiba — the box art alone earns it shelf space.' },
+  { name: 'Strike Gundam', grade: 'EG', series: 'Mobile Suit Gundam SEED', status: 'wishlist',
+    desc: 'Entry Grade engineering is genuinely impressive — no nippers needed, perfect color separation, and it costs less than lunch. Want one for the desk at work.' },
+  { name: 'Gundam Barbatos Lupus Rex', grade: 'FM', series: 'Iron-Blooded Orphans', status: 'wishlist',
+    desc: 'Full Mechanics line at 1/100 without the MG price. Those claws and the tail blade make it the most feral-looking Gundam ever put in a box.' },
+  { name: 'Strike Freedom Gundam', grade: 'MGEX', series: 'Mobile Suit Gundam SEED Destiny', status: 'wishlist',
+    desc: 'The MGEX gimmick is the fully plated inner frame — gold everywhere. The wings of light effect parts push it into centerpiece territory.' },
+];
+async function loadSamples() {
+  let added = 0;
+  for (const s of SAMPLE_KITS) {
+    if (kits.some(k => k.name === s.name && k.grade === s.grade)) continue;
+    const kit = { id: uid(), scale: GRADES[s.grade].scale, boxArt: '', photos: [], manual: null, manualUrl: '', links: [], added: Date.now() - added * 60000, ...s };
+    await idbPut(kit);
+    kits.push(kit);
+    added++;
+  }
+  if ($('settingsModal').classList.contains('open')) closeSettings();
+  render();
+  toast(added ? `Added ${added} sample kits 🤖` : 'Sample kits are already loaded');
+}
+
+/* ==================== Wiring ==================== */
+buildFormOptions();
+
+$('addBtn').addEventListener('click', openAdd);
+$('settingsBtn').addEventListener('click', openSettings);
+$('searchInput').addEventListener('input', e => { searchQuery = e.target.value; render(); });
+
+$('fGrade').addEventListener('change', () => {
+  const g = GRADES[$('fGrade').value];
+  const scales = Object.values(GRADES).map(x => x.scale);
+  if (!$('fScale').value || scales.includes($('fScale').value)) $('fScale').value = g.scale;
+});
+
+$('fBoxArtFile').addEventListener('change', async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try { editBoxArt = await compressImage(f, 1000, 0.84); renderBoxArtPreview(); $('fBoxArtUrl').value = ''; }
+  catch { toast("Couldn't read that image ❌"); }
+  e.target.value = '';
+});
+$('fBoxArtUrl').addEventListener('change', e => {
+  const v = e.target.value.trim();
+  if (v) { editBoxArt = v; renderBoxArtPreview(); }
+});
+$('fPhotosFile').addEventListener('change', async e => {
+  for (const f of e.target.files) {
+    try { editPhotos.push(await compressImage(f, 1400, 0.85)); } catch { }
+  }
+  renderPhotoStrip();
+  e.target.value = '';
+});
+$('fManualFile').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  if (f.size > 120 * 1048576) { toast('That PDF is over 120 MB — too large to store'); return; }
+  editManual = { name: f.name, size: f.size, type: f.type || 'application/pdf', blob: f };
+  renderManualChip();
+});
+$('importFile').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) importCollection(f);
+  e.target.value = '';
+});
+
+// Close modals when clicking the dark backdrop
+['editModal', 'settingsModal'].forEach(id => {
+  $(id).addEventListener('click', e => { if (e.target === $(id)) (id === 'editModal' ? closeEdit : closeSettings)(); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if ($('lightbox').classList.contains('open')) closeLightbox();
+  else if ($('editModal').classList.contains('open')) closeEdit();
+  else if ($('settingsModal').classList.contains('open')) closeSettings();
+  else if ($('detailPage').classList.contains('open')) closeDetail();
+});
+
+/* ==================== Boot ==================== */
+(async function init() {
+  try {
+    db = await openDB();
+    kits = await idbAll();
+  } catch (e) {
+    kits = [];
+    toast('Storage unavailable — changes will not be saved ⚠️');
+  }
+  if (new URLSearchParams(location.search).has('demo') && !kits.length) await loadSamples();
+  render();
+})();
+</script>
+</body>
+</html>
