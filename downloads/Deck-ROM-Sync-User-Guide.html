@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deck ROM Sync — User Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", -apple-system, system-ui, sans-serif;
+            line-height: 1.6;
+            color: #e8eaf0;
+            background: #0b0d12;
+            padding: 0;
+        }
+
+        /* Print stylesheet */
+        @media print {
+            html, body, * {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            body {
+                font-size: 11pt;
+                line-height: 1.5;
+                background: #0b0d12;
+                color: #e8eaf0;
+            }
+            h1 {
+                page-break-after: avoid;
+            }
+            h2 {
+                page-break-after: avoid;
+                page-break-before: avoid;
+            }
+            h3 {
+                page-break-after: avoid;
+            }
+            p, ul, ol, pre {
+                page-break-inside: avoid;
+                orphans: 2;
+                widows: 2;
+            }
+            a {
+                text-decoration: none;
+                color: #8b7cf8;
+            }
+            code, pre {
+                background: #151923;
+                border: 1px solid #232a38;
+                color: #e8eaf0;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .toc-page {
+                page-break-after: always;
+            }
+        }
+
+        @media screen {
+            body {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+        }
+
+        /* Title page */
+        .title-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            page-break-after: always;
+        }
+
+        .title-page h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #8b7cf8;
+        }
+
+        .title-page p {
+            font-size: 1.2em;
+            color: #9aa3b5;
+            margin-bottom: 10px;
+        }
+
+        .title-page .version {
+            font-size: 0.9em;
+            color: #6b7487;
+            margin-top: 40px;
+        }
+
+        /* Table of Contents */
+        .toc {
+            page-break-after: always;
+        }
+
+        .toc h2 {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: #e8eaf0;
+        }
+
+        .toc ol {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+
+        .toc ol li {
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .toc ol ol {
+            margin-top: 8px;
+            margin-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .toc ol ol li {
+            margin-bottom: 6px;
+        }
+
+        /* Main content */
+        .content {
+            padding: 20px 0;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-top: 0;
+            margin-bottom: 30px;
+            color: #e8eaf0;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            color: #e8eaf0;
+            border-bottom: 2px solid #8b7cf8;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.3em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #8b7cf8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-bottom: 15px;
+            margin-left: 40px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+            background: #151923;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #4fd1c5;
+            border: 1px solid #232a38;
+        }
+
+        pre {
+            background: #151923;
+            border: 1px solid #232a38;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            font-family: "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e8eaf0;
+            border: none;
+        }
+
+        .note {
+            background: rgba(139, 124, 248, 0.14);
+            border-left: 4px solid #8b7cf8;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 2px;
+        }
+
+        .note strong {
+            color: #8b7cf8;
+        }
+
+        .warning {
+            background: rgba(79, 209, 197, 0.14);
+            border-left: 4px solid #4fd1c5;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 2px;
+        }
+
+        .warning strong {
+            color: #4fd1c5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        th, td {
+            border: 1px solid #232a38;
+            padding: 12px;
+            text-align: left;
+            color: #e8eaf0;
+        }
+
+        th {
+            background: #151923;
+            font-weight: 600;
+            color: #8b7cf8;
+        }
+
+        tr:nth-child(even) {
+            background: #12151d;
+        }
+
+        .emoji {
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Page -->
+    <div class="title-page">
+        <h1>Deck ROM Sync</h1>
+        <p>Windows Desktop App for Steam Deck Emulation Library Management</p>
+        <p class="version">User Guide & Reference Manual</p>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ol>
+            <li>Overview
+                <ol>
+                    <li>What Deck ROM Sync Does</li>
+                    <li>The Sync Model</li>
+                    <li>Key Features</li>
+                </ol>
+            </li>
+            <li>Steam Deck Setup
+                <ol>
+                    <li>Initial Configuration</li>
+                    <li>SSH Setup</li>
+                    <li>SSH Key Authentication (Recommended)</li>
+                    <li>Password Authentication</li>
+                    <li>Finding Your Deck's IP Address</li>
+                </ol>
+            </li>
+            <li>PC Application Setup
+                <ol>
+                    <li>Installation Methods</li>
+                    <li>First-Time Configuration</li>
+                    <li>Settings Reference</li>
+                </ol>
+            </li>
+            <li>Adding Games to Your Library
+                <ol>
+                    <li>Organizing Your ROM Collection</li>
+                    <li>Import Methods</li>
+                    <li>Auto-Sorting by Extension</li>
+                    <li>File Preparation (CUE/M3U)</li>
+                </ol>
+            </li>
+            <li>BIOS Management
+                <ol>
+                    <li>What BIOS Does</li>
+                    <li>BIOS Pool Folder</li>
+                    <li>Supported Systems & Requirements</li>
+                    <li>Where to Place BIOS Files</li>
+                </ol>
+            </li>
+            <li>Synchronization
+                <ol>
+                    <li>Sync to Deck (Push)</li>
+                    <li>Sync from Deck (Pull)</li>
+                    <li>Understanding Deletions</li>
+                    <li>Canceling a Sync</li>
+                </ol>
+            </li>
+            <li>Validation & Refresh
+                <ol>
+                    <li>Deck Companion Script</li>
+                    <li>Manual Validation</li>
+                    <li>Game Library Refresh</li>
+                </ol>
+            </li>
+            <li>Troubleshooting &amp; FAQ</li>
+        </ol>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Deck ROM Sync User Guide</h1>
+
+        <!-- Section 1: Overview -->
+        <h2>1. Overview</h2>
+
+        <h3>1.1 What Deck ROM Sync Does</h3>
+        <p>Deck ROM Sync is a Windows desktop application that manages your emulator ROM library and mirrors it to a Steam Deck running EmuDeck. Instead of manually copying files over the network or managing file structures by hand, you organize your games on your PC and click "Sync to Deck" — the app handles uploading new games, removing deleted ones, and preparing your ROMs in the exact format EmuDeck expects.</p>
+
+        <p>The app reads your local library organized in EmuDeck's folder structure, auto-sorts new files you add, generates required playlist files for multi-disc games, and synchronizes everything to your Deck over SSH/SFTP at the press of a button.</p>
+
+        <h3>1.2 The Sync Model</h3>
+        <p><strong>Deck ROM Sync uses a push-pull model:</strong></p>
+        <ul>
+            <li><strong>Sync to Deck (Push):</strong> Uploads your PC library to the Deck. Any files new or changed on your PC are sent to the Deck; any files deleted from your PC are removed from the Deck (after confirmation). This is the main workflow — you manage your library on PC and push it to the Deck whenever you've made changes.</li>
+            <li><strong>Sync from Deck (Pull):</strong> Imports ROMs from the Deck into your PC library. This is always additive — it never deletes anything from your PC. Useful when you've added games directly on the Deck or want to back up your Deck's library to your PC.</li>
+            <li><strong>The first time you sync</strong>, if your PC library is empty, the app will offer to pull from the Deck before pushing anything, so you don't lose existing games.</li>
+        </ul>
+
+        <h3>1.3 Key Features</h3>
+        <ul>
+            <li><strong>Auto-sorting:</strong> Drag ROM files onto the app; they're routed to the correct system folder based on file extension.</li>
+            <li><strong>File preparation:</strong> Generates `.cue` files for lone `.bin` images; builds `.m3u` playlists automatically for multi-disc games.</li>
+            <li><strong>BIOS management:</strong> Flags required firmware by system; routes known BIOS files to the BIOS pool for automatic sync.</li>
+            <li><strong>Network sync:</strong> Transfers files over SSH/SFTP with per-file progress and overall "file n of m" counter.</li>
+            <li><strong>Deletion safety:</strong> Previews all deletions and asks for confirmation before removing anything from the Deck.</li>
+            <li><strong>Validation:</strong> Runs a companion script on the Deck after each sync to verify game integrity and refresh the game library.</li>
+            <li><strong>SSH key support:</strong> Recommended authentication method — no password stored on disk.</li>
+            <li><strong>Packaged executable:</strong> Ships as a standalone Windows `.exe` with no external dependencies beyond Python 3.11+.</li>
+        </ul>
+
+        <!-- Section 2: Steam Deck Setup -->
+        <h2>2. Steam Deck Setup</h2>
+
+        <h3>2.1 Initial Configuration</h3>
+        <p>Before you can connect to your Steam Deck from Deck ROM Sync, you need to enable SSH on the Deck and set a password for the `deck` user. This is a one-time setup.</p>
+
+        <p><strong>On your Steam Deck, switch to Desktop Mode:</strong></p>
+        <ol>
+            <li>Hold the Power button to show the power menu.</li>
+            <li>Select "Switch to Desktop" or open KDE Plasma Desktop from Game Mode.</li>
+            <li>Open <strong>Konsole</strong> (the terminal application).</li>
+        </ol>
+
+        <p><strong>Set a password for the `deck` user:</strong></p>
+        <pre><code>passwd</code></pre>
+        <p>You'll be prompted to enter and confirm a new password. This is the password you'll use in Deck ROM Sync if you choose password authentication (or it's used by SSH key operations).</p>
+
+        <p><strong>Enable SSH:</strong></p>
+        <pre><code>sudo systemctl enable --now sshd</code></pre>
+        <p>This starts the SSH service immediately and configures it to start automatically whenever the Deck boots. You'll be asked for the `deck` user's password (the one you just set).</p>
+
+        <h3>2.2 SSH Setup (Overview)</h3>
+        <p>You now have two authentication options for connecting to your Deck:</p>
+        <ul>
+            <li><strong>SSH Key (recommended):</strong> Your PC stores a cryptographic key; nothing secret is stored on disk, and the key can only be used on systems you configure.</li>
+            <li><strong>Password:</strong> Your Deck password is encrypted with Windows DPAPI and stored in the app's config file. It's tied to your Windows account — readable by anything running as you, but useless to anyone else or another PC.</li>
+        </ul>
+
+        <h3>2.3 SSH Key Authentication (Recommended)</h3>
+        <p>SSH keys are more secure than passwords because they don't require storing a secret on disk. Here's how to set one up:</p>
+
+        <p><strong>On your Windows PC, open PowerShell and generate a key:</strong></p>
+        <pre><code>ssh-keygen -t ed25519</code></pre>
+        <p>Press Enter to accept the default location (`%USERPROFILE%\.ssh\id_ed25519`). You can leave the passphrase empty if you want the key to work without a prompt; a passphrase adds another layer of security but means you'll need to enter it each time.</p>
+
+        <p><strong>Copy the public key to your Deck:</strong></p>
+        <pre><code>type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh deck@&lt;deck-ip&gt; "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"</code></pre>
+        <p>Replace `&lt;deck-ip&gt;` with your Deck's IP address (see section 2.5 below). You'll be prompted for the `deck` user's password once to authorize the key upload.</p>
+
+        <p><strong>In Deck ROM Sync Settings, select:</strong></p>
+        <ul>
+            <li>Authentication: <strong>SSH key</strong></li>
+            <li>Leave the password field blank</li>
+        </ul>
+        <p>The app will use your key from `%USERPROFILE%\.ssh\` automatically.</p>
+
+        <h3>2.4 Password Authentication</h3>
+        <p>If you prefer not to use SSH keys, you can authenticate with your Deck's password. The password is encrypted with the Windows Data Protection API (DPAPI) before being written to the config file.</p>
+
+        <p><strong>Security note:</strong> DPAPI encryption ties the encrypted password to your Windows account and this PC. The password is still readable by anything running as you — it provides the same guarantee as browser password managers and most Windows apps. SSH keys, by contrast, don't require storing any secret on disk at all, which is why they're recommended.</p>
+
+        <p><strong>In Deck ROM Sync Settings, select:</strong></p>
+        <ul>
+            <li>Authentication: <strong>Password</strong></li>
+            <li>Enter your Deck's password</li>
+        </ul>
+
+        <h3>2.5 Finding Your Deck's IP Address</h3>
+        <p><strong>Option 1: On the Deck itself</strong></p>
+        <ol>
+            <li>Go to Settings > Internet (in Desktop Mode or Game Mode).</li>
+            <li>Look for your Wi-Fi connection; it should display the IP address.</li>
+        </ol>
+
+        <p><strong>Option 2: From Konsole on the Deck</strong></p>
+        <pre><code>ip a</code></pre>
+        <p>Look for the line under your network device (usually `wlan0`); the IP is listed after `inet`.</p>
+
+        <p><strong>Option 3: From your PC (if on the same network)</strong></p>
+        <p>Open Command Prompt or PowerShell and run:</p>
+        <pre><code>arp -a</code></pre>
+        <p>Look for an entry with Valve's MAC address prefix, or use your router's admin interface to find connected devices.</p>
+
+        <div class="note">
+            <strong>Note:</strong> Steam Deck IP addresses can change if you don't have a static IP set on your Deck. If Deck ROM Sync fails to connect later, check the IP hasn't changed and update it in Settings.
+        </div>
+
+        <!-- Section 3: PC Application Setup -->
+        <h2>3. PC Application Setup</h2>
+
+        <h3>3.1 Installation Methods</h3>
+        <p><strong>Option 1: Standalone Executable (Recommended)</strong></p>
+        <ol>
+            <li>Navigate to the Deck ROM Sync folder (where `build_exe.bat` is located).</li>
+            <li>Double-click `build_exe.bat`.</li>
+            <li>Wait for the build to complete. You'll see `dist\Deck ROM Sync.exe` when it's done.</li>
+            <li>Double-click `Deck ROM Sync.exe` to run the app, or use `Create Desktop Shortcut.bat` to add it to your Desktop.</li>
+        </ol>
+        <p>The `.exe` is completely self-contained; nothing else needs to ship with it, and it requires no Python installation on your PC.</p>
+
+        <p><strong>Option 2: Run from Source</strong></p>
+        <ol>
+            <li>Ensure Python 3.11+ is installed (from python.org, with tkinter included).</li>
+            <li>Navigate to the Deck ROM Sync folder.</li>
+            <li>Double-click `run.bat` (or manually run `.venv\Scripts\python deck_rom_sync.py`).</li>
+            <li>On first run, the app creates a virtual environment and installs dependencies.</li>
+        </ol>
+
+        <h3>3.2 First-Time Configuration</h3>
+        <p>When you launch the app for the first time, you'll see the main window with a button labeled "Settings" in the top-right. Click it to configure:</p>
+
+        <h3>3.3 Settings Reference</h3>
+        <p><strong>Library folder</strong> — The root directory where your emulator ROMs are stored on your PC. This should be organized like EmuDeck: `&lt;library&gt;/psx/`, `&lt;library&gt;/n64/`, etc. Example: `C:\Games\EmuLibrary`.</p>
+
+        <p><strong>Steam Deck IP / hostname</strong> — The IP address or hostname of your Deck on the network. Example: `192.168.1.100` or `steamdeck.local`. You can find this in Deck Settings > Internet or by running `ip a` in Konsole (see section 2.5).</p>
+
+        <p><strong>SSH port</strong> — The port SSH listens on. Default is `22` (standard SSH port). Only change this if you've configured your Deck to use a non-standard port.</p>
+
+        <p><strong>Deck username</strong> — The user account you're connecting to. Default is `deck` (the standard EmuDeck user). Leave this as-is unless you've created a different user.</p>
+
+        <p><strong>ROMs path on Deck</strong> — The remote path to EmuDeck's ROMs folder. Default is `/home/deck/Emulation/roms`. Only change this if your EmuDeck installation is in a custom location.</p>
+
+        <p><strong>Authentication method</strong></p>
+        <ul>
+            <li><strong>SSH key:</strong> The app will use your key from `%USERPROFILE%\.ssh\`. Leave the password field blank.</li>
+            <li><strong>Password:</strong> Enter the password for the `deck` user on your Deck (set in section 2.1). The app encrypts it with DPAPI before storing it.</li>
+        </ul>
+
+        <p><strong>Password field</strong> — Used only if Authentication is set to "Password". Leave blank if using SSH key authentication.</p>
+
+        <!-- Section 4: Adding Games -->
+        <h2>4. Adding Games to Your Library</h2>
+
+        <h3>4.1 Organizing Your ROM Collection</h3>
+        <p>Deck ROM Sync organizes ROMs in EmuDeck's standard structure:</p>
+        <pre><code>YourLibrary/
+├── psx/
+│   └── Final Fantasy VII (Disc 1).bin
+├── n64/
+│   └── The Legend of Zelda - Ocarina of Time.z64
+├── segacd/
+│   └── Sonic CD (Track 01).iso
+└── bios/
+    └── scph5500.bin</code></pre>
+
+        <p>Each console gets its own folder, with games as files (or folders for folder-based systems like Wii U, PS3, Dreamcast). The app auto-detects extensions and sorts files into the correct folder when you import them.</p>
+
+        <h3>4.2 Import Methods</h3>
+        <p><strong>Drag and Drop (if tkinterdnd2 is installed)</strong></p>
+        <p>Drag one or more ROM files onto the app window's drop zone. The app auto-sorts them and shows a summary of what was added.</p>
+
+        <p><strong>Click to Browse (always available)</strong></p>
+        <p>Click the "Add Game Files" or "Add Game Folder" button to open a file picker. Select one or more files or folders, and the app imports them.</p>
+
+        <p><strong>Add Game Files:</strong> For multi-file games, select every file the game needs (e.g., both a `.cue` and its `.bin`). The app won't split them up.</p>
+
+        <p><strong>Add Game Folder:</strong> For games stored in folders (like Wii U, PS3, Dreamcast), select the folder and the app imports the whole thing as-is.</p>
+
+        <h3>4.3 Auto-Sorting by Extension</h3>
+        <p>When you add files, the app recognizes their extension and routes them to the correct system folder:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Extension</th>
+                    <th>Systems</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>.bin, .cue, .iso</td>
+                    <td>PlayStation 1 (psx), Sega CD (segacd), Dreamcast, etc. — app prompts you if ambiguous</td>
+                </tr>
+                <tr>
+                    <td>.z64, .n64, .zip</td>
+                    <td>Nintendo 64 (n64)</td>
+                </tr>
+                <tr>
+                    <td>.nes, .zip</td>
+                    <td>Nintendo Entertainment System (nes)</td>
+                </tr>
+                <tr>
+                    <td>.gba, .zip</td>
+                    <td>Game Boy Advance (gba)</td>
+                </tr>
+                <tr>
+                    <td>.chd</td>
+                    <td>Dreamcast, Sega Saturn, or prompted</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>If an extension could map to multiple systems (e.g., `.iso` could be PS1 or Sega CD), the app shows a dialog asking you to pick the system. You only need to pick once per import — the app remembers for the rest of the session.</p>
+
+        <h3>4.4 File Preparation (CUE/M3U)</h3>
+        <p>When you add multi-file games, the app handles playlist and cue-sheet generation automatically:</p>
+
+        <p><strong>Lone `.bin` files:</strong> The app generates a minimal `.cue` file that points at the `.bin`. This is required for emulators to recognize the disc image.</p>
+
+        <p><strong>Multi-disc games:</strong> If the app detects files named like `Game (Disc 1).bin`, `Game (Disc 2).bin`, etc., it automatically builds an `.m3u` playlist file that lists all the discs. When you add these to your Deck, you select the `.m3u` in your emulator to play multi-disc games seamlessly.</p>
+
+        <p><strong>The log shows what was generated:</strong> After importing, check the import log to see which files were added and if any `.cue` or `.m3u` files were created.</p>
+
+        <!-- Section 5: BIOS Management -->
+        <h2>5. BIOS Management</h2>
+
+        <h3>5.1 What BIOS Does</h3>
+        <p>BIOS (Basic Input/Output System) or firmware files are required by emulators to run certain consoles. They're proprietary code dumps from the original hardware and must be obtained from a console you own — they're never downloaded by this app or any emulator.</p>
+
+        <p>Some consoles (like Super Nintendo, Game Boy) don't need BIOS; others (PlayStation 1, Dreamcast) require specific firmware dumps. Deck ROM Sync flags which systems need BIOS and helps route the files to your Deck.</p>
+
+        <h3>5.2 BIOS Pool Folder</h3>
+        <p>Inside your library folder, the app creates (or expects) a `bios/` subfolder. This is your BIOS pool — a central place where you keep BIOS files for all your systems.</p>
+
+        <p>When you sync to the Deck, the app:</p>
+        <ol>
+            <li>Checks which games need BIOS (based on the system they're in).</li>
+            <li>Looks in your `bios/` pool for the required files.</li>
+            <li>If found, queues them to sync to the Deck's `~/Emulation/bios/` folder alongside your ROMs.</li>
+        </ol>
+
+        <p><strong>Example:</strong> If you're syncing PlayStation 1 games and have `scph5500.bin` in your `bios/` folder, the app will upload it to the Deck's `~/Emulation/bios/` automatically.</p>
+
+        <h3>5.3 Supported Systems & Requirements</h3>
+        <p>The app knows which systems require BIOS and which file names to look for:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>System</th>
+                    <th>BIOS File(s)</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>PlayStation 1 (psx)</td>
+                    <td>scph5500.bin, scph5501.bin, or scph5502.bin</td>
+                    <td>Any one region dump satisfies the requirement</td>
+                </tr>
+                <tr>
+                    <td>PlayStation 2 (ps2)</td>
+                    <td>Any .bin file</td>
+                    <td>PS2 BIOS is identified by content, not filename</td>
+                </tr>
+                <tr>
+                    <td>Sega Saturn (saturn)</td>
+                    <td>sega_101.bin or mpr-17933.bin</td>
+                    <td>Any one region dump</td>
+                </tr>
+                <tr>
+                    <td>Sega CD (segacd)</td>
+                    <td>bios_CD_U.bin, bios_CD_E.bin, or bios_CD_J.bin</td>
+                    <td>Any one region dump</td>
+                </tr>
+                <tr>
+                    <td>Dreamcast</td>
+                    <td>dc_boot.bin AND dc_flash.bin</td>
+                    <td>Both files are required</td>
+                </tr>
+                <tr>
+                    <td>Game Boy Advance (gba)</td>
+                    <td>gba_bios.bin</td>
+                    <td>Optional but checked anyway</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>5.4 Where to Place BIOS Files</h3>
+        <ol>
+            <li>Create a `bios/` folder inside your library root (e.g., `C:\Games\EmuLibrary\bios\`).</li>
+            <li>Copy your BIOS files into this folder. Use the exact filenames from the table above.</li>
+            <li>When you sync to the Deck, the app automatically uploads needed BIOS files alongside your ROMs.</li>
+        </ol>
+
+        <p><strong>The log shows BIOS status:</strong> After importing games, the log displays `NEEDS:` lines for any missing BIOS. Fix these before syncing to the Deck, or the games won't launch.</p>
+
+        <div class="warning">
+            <strong>Important:</strong> This app never downloads BIOS. Console firmware is copyrighted and must come from a console you own. Use a cartridge dump utility or specialized hardware to extract BIOS from your own equipment.
+        </div>
+
+        <!-- Section 6: Synchronization -->
+        <h2>6. Synchronization</h2>
+
+        <h3>6.1 Sync to Deck (Push)</h3>
+        <p>Sync to Deck is the main operation: it uploads your entire PC library to the Deck and makes the Deck's `/home/deck/Emulation/roms/` folders match exactly.</p>
+
+        <p><strong>What happens:</strong></p>
+        <ol>
+            <li>The app connects to your Deck over SSH/SFTP.</li>
+            <li>It compares your PC library to what's on the Deck, system by system.</li>
+            <li>New files and changed files are uploaded (with a per-file progress bar).</li>
+            <li>Files deleted from your PC are queued for deletion on the Deck (you'll be asked to confirm first).</li>
+            <li>BIOS files from your `bios/` pool are uploaded to the Deck's `~/Emulation/bios/` folder.</li>
+            <li>When complete, the app uploads and runs `deck_companion.py` on the Deck to validate the sync and refresh the game library.</li>
+        </ol>
+
+        <p><strong>The progress window shows:</strong></p>
+        <ul>
+            <li>A scrollable log of every file being uploaded, skipped, or deleted.</li>
+            <li>A per-file progress bar (if the file is large).</li>
+            <li>An overall "File N of M" counter so you know how far through the sync you are.</li>
+            <li>A "Cancel Sync" button to stop cleanly mid-transfer (files already uploaded are left on the Deck; the transfer just stops).</li>
+        </ul>
+
+        <h3>6.2 Sync from Deck (Pull)</h3>
+        <p>Sync from Deck is always additive — it imports ROMs and BIOS from the Deck into your PC library without deleting anything.</p>
+
+        <p><strong>When to use:</strong></p>
+        <ul>
+            <li>You've added games directly on the Deck (e.g., downloaded ROMs or copied files manually) and want to back them up to your PC.</li>
+            <li>Your PC library was empty and you want to import the Deck's existing library before pushing.</li>
+            <li>You're syncing to a second PC and want to pull the Deck's library as a starting point.</li>
+        </ul>
+
+        <p><strong>What happens:</strong></p>
+        <ol>
+            <li>The app downloads every game in the Deck's `/home/deck/Emulation/roms/` folders.</li>
+            <li>Files are placed into the same system folder structure on your PC.</li>
+            <li>If a file with the same name already exists on your PC, it's skipped (not overwritten).</li>
+            <li>BIOS files are downloaded to your `bios/` pool.</li>
+        </ol>
+
+        <p><strong>First-sync offer:</strong> If your PC library is empty and you're about to push games to the Deck, the app will offer to pull from the Deck first. This prevents you from accidentally wiping out an existing Deck library if you were starting fresh.</p>
+
+        <h3>6.3 Understanding Deletions</h3>
+        <p>When you remove a game from your PC library (delete the folder or files), Sync to Deck will remove it from the Deck on the next push. To prevent accidental loss, the app shows a confirmation dialog listing every file it's about to delete.</p>
+
+        <p><strong>The deletion confirmation includes:</strong></p>
+        <ul>
+            <li>A scrollable list of every file or folder to be deleted.</li>
+            <li>The total number of files and total storage being removed.</li>
+            <li>A confirmation button you must click to proceed.</li>
+        </ul>
+
+        <p><strong>Safety guardrail:</strong> If you're about to delete a very large chunk of your Deck's library (e.g., more than 50% of total files) or if your PC library is empty, the app will ask for typed confirmation (typing "DELETE" or similar) to prevent accidental wipes.</p>
+
+        <div class="note">
+            <strong>Note:</strong> You're asked to confirm deletions once per app session. If you sync multiple times without closing the app, you won't see the confirmation dialog again (unless the list changes).
+        </div>
+
+        <h3>6.4 Canceling a Sync</h3>
+        <p>During a Sync to Deck or Sync from Deck operation, a "Cancel Sync" button is visible in the progress window. Click it to stop the transfer immediately.</p>
+
+        <p><strong>When you cancel:</strong></p>
+        <ul>
+            <li>The app stops uploading or downloading files.</li>
+            <li>Files that have already been transferred stay on the Deck (or PC).</li>
+            <li>The transfer is not rolled back — it's just halted.</li>
+            <li>You can re-run the sync to pick up where it left off (the app will skip files already present).</li>
+        </ul>
+
+        <!-- Section 7: Validation & Refresh -->
+        <h2>7. Validation & Refresh</h2>
+
+        <h3>7.1 Deck Companion Script</h3>
+        <p>After every Sync to Deck operation, Deck ROM Sync automatically uploads and runs a companion script on the Deck called `deck_companion.py`. This script:</p>
+
+        <ul>
+            <li><strong>Validates games:</strong> Checks that every multi-disc `.m3u` playlist references real files on the Deck, and every `.cue` sheet points to existing disc images.</li>
+            <li><strong>Checks BIOS:</strong> Confirms that all required BIOS files for each system are present in `~/Emulation/bios/`.</li>
+            <li><strong>Refreshes the game library:</strong> Restarts ES-DE or equivalent to scan for newly added games so they show up immediately in your emulator front-end.</li>
+        </ul>
+
+        <p><strong>The validation report:</strong> After the companion script runs, you'll see a summary in Deck ROM Sync's log showing which systems were validated, how many games are present, and any issues found (broken files, missing BIOS).</p>
+
+        <h3>7.2 Manual Validation</h3>
+        <p>If you've added games manually on the Deck (not through Deck ROM Sync), you can run the companion script yourself from Desktop Mode > Konsole:</p>
+
+        <pre><code>python3 deck_companion.py</code></pre>
+
+        <p><strong>Command-line options:</strong></p>
+        <ul>
+            <li>`python3 deck_companion.py` — Validate all games and print a report.</li>
+            <li>`python3 deck_companion.py --refresh` — Validate and refresh the game library (restart ES-DE).</li>
+            <li>`python3 deck_companion.py --json` — Output the report as machine-readable JSON.</li>
+        </ul>
+
+        <h3>7.3 Game Library Refresh</h3>
+        <p>When you launch games through EmuDeck's front-end (ES-DE), it scans your ROMs folder. After a large sync or manual file additions, you might need to refresh:</p>
+
+        <p><strong>Option 1: Automatic (via Deck ROM Sync)</strong></p>
+        <p>Deck ROM Sync runs the companion script automatically after each push, which refreshes ES-DE. New games should appear within seconds.</p>
+
+        <p><strong>Option 2: Manual (from ES-DE on the Deck)</strong></p>
+        <ol>
+            <li>Open ES-DE on the Deck (from Game Mode or Desktop shortcuts).</li>
+            <li>Go to the system folder where you added games.</li>
+            <li>You might see a "Refresh" option in the menu.</li>
+        </ol>
+
+        <p><strong>Option 3: Steam ROM Manager</strong></p>
+        <p>If you launch games through Steam directly (using Steam ROM Manager), you may need to manually add new games to Steam:</p>
+        <ol>
+            <li>Open EmuDeck settings.</li>
+            <li>Select "Steam ROM Manager".</li>
+            <li>Click "Add games" to re-scan and import your library.</li>
+        </ol>
+
+        <!-- Section 8: Troubleshooting & FAQ -->
+        <h2>8. Troubleshooting & FAQ</h2>
+
+        <h3>Errors & Connection Issues</h3>
+
+        <p><strong>Q: "Connection refused" or "Connection timeout"</strong></p>
+        <p><strong>A:</strong> Your PC can't reach the Deck. Check:</p>
+        <ul>
+            <li>The Deck is powered on and in Desktop Mode (or the network is active in Game Mode).</li>
+            <li>SSH is running: On the Deck, run `sudo systemctl status sshd` in Konsole. If it's not active, run `sudo systemctl enable --now sshd`.</li>
+            <li>The IP address is correct and hasn't changed (Steam Deck IPs can change if not static). Find the current IP in Deck Settings > Internet or run `ip a` in Konsole.</li>
+            <li>Both devices are on the same Wi-Fi network.</li>
+            <li>Firewall on the PC isn't blocking SSH (port 22 by default, or your configured SSH port).</li>
+        </ul>
+
+        <p><strong>Q: "paramiko is not installed"</strong></p>
+        <p><strong>A:</strong> Dependencies are missing. Run `build_exe.bat` or `run.bat` again to reinstall them. If building from source, run `pip install -r requirements.txt`.</p>
+
+        <p><strong>Q: "Drag-and-drop doesn't work"</strong></p>
+        <p><strong>A:</strong> The optional `tkinterdnd2` library isn't installed. The app still works via the "Add Game Files" button and click-to-browse import. If you want drag-and-drop, run `pip install tkinterdnd2` in your virtual environment or reinstall using `build_exe.bat`.</p>
+
+        <h3>Sync Issues</h3>
+
+        <p><strong>Q: "Games don't show up on the Deck after sync"</strong></p>
+        <p><strong>A:</strong> The game library wasn't refreshed. The companion script normally handles this, but if you used manual file transfers or it failed:</p>
+        <ul>
+            <li>On the Deck, open EmuDeck > Steam ROM Manager > click "Add games".</li>
+            <li>Or restart ES-DE by running `systemctl --user restart es-de` in Konsole.</li>
+        </ul>
+
+        <p><strong>Q: "A file failed to upload during sync"</strong></p>
+        <p><strong>A:</strong> Network hiccup. Run Sync to Deck again. The app skips files that are already on the Deck, so it won't re-upload successful files — just retry the ones that failed.</p>
+
+        <p><strong>Q: "The Deck is running out of space"</strong></p>
+        <p><strong>A:</strong> Your Deck's storage is full. You'll need to either:</p>
+        <ul>
+            <li>Delete games from the Deck (e.g., via the app's Sync to Deck — after removing them from your PC library and confirming the deletion).</li>
+            <li>Expand the Deck's storage via microSD card or a larger internal drive replacement.</li>
+            <li>Sync only select systems instead of the whole library.</li>
+        </ul>
+
+        <h3>BIOS & File Preparation</h3>
+
+        <p><strong>Q: "The log shows 'NEEDS: PlayStation 1: scph5500.bin'"</strong></p>
+        <p><strong>A:</strong> Your PSX games need BIOS, but the app couldn't find `scph5500.bin` in your `bios/` pool. You need to dump this file from a real PlayStation 1 you own and place it in your library's `bios/` folder. Use a cartridge dump device or emulator extraction tool; don't download it.</p>
+
+        <p><strong>Q: "A multi-disc game isn't detected"</strong></p>
+        <p><strong>A:</strong> The app builds `.m3u` playlists only for files named like `Game (Disc 1)`, `Game (Disc 2)`, etc. If your files are named differently (e.g., `Game - Disc 1`), the app won't auto-generate the playlist. You can:</p>
+        <ul>
+            <li>Rename the files to match the `(Disc N)` pattern, or</li>
+            <li>Manually create an `.m3u` file listing each disc in order (it's a plain text file with one filename per line).</li>
+        </ul>
+
+        <p><strong>Q: "A `.cue` file points to the wrong `.bin`"</strong></p>
+        <p><strong>A:</strong> The app generates `.cue` files only for lone `.bin` files. If you have a pre-made `.cue` that references a `.bin` with a different name, the companion script will flag it as broken. Fix it by:</p>
+        <ul>
+            <li>Editing the `.cue` file to match the actual `.bin` filename, or</li>
+            <li>Renaming the `.bin` to match the `.cue`.</li>
+        </ul>
+
+        <h3>Settings & Authentication</h3>
+
+        <p><strong>Q: "I forgot my Deck's password"</strong></p>
+        <p><strong>A:</strong> On the Deck, open Konsole and run `passwd` to set a new password. Then update the password in Deck ROM Sync Settings.</p>
+
+        <p><strong>Q: "SSH key authentication isn't working"</strong></p>
+        <p><strong>A:</strong> Make sure you:</p>
+        <ul>
+            <li>Ran the key-copy command correctly (see section 2.3).</li>
+            <li>Have `%USERPROFILE%\.ssh\id_ed25519` (or similar) on your PC.</li>
+            <li>Left the password field blank in Settings if using key auth.</li>
+            <li>The Deck's `~/.ssh/authorized_keys` file exists and has your public key (run `cat ~/.ssh/authorized_keys` in Konsole to check).</li>
+        </ul>
+
+        <p><strong>Q: "Can I change the SSH port?"</strong></p>
+        <p><strong>A:</strong> Yes, if you've configured your Deck to use a non-standard SSH port (not 22), set it in Deck ROM Sync Settings under "SSH port". Most setups use the default port 22.</p>
+
+        <h3>General FAQ</h3>
+
+        <p><strong>Q: "Is it safe to edit the config file manually?"</strong></p>
+        <p><strong>A:</strong> The config file is at `%APPDATA%\DeckRomSync\config.json`. You can edit it, but use the Settings dialog in the app when possible — it handles validation and encryption correctly. If you do edit it manually, be careful with the password field (it must be encrypted or missing).</p>
+
+        <p><strong>Q: "Can I sync to multiple Decks?"</strong></p>
+        <p><strong>A:</strong> The app stores one Deck's IP and credentials at a time. You'd need separate copies of the app (or separate config files) to manage multiple Decks, or use the Settings dialog to switch between different Deck configurations.</p>
+
+        <p><strong>Q: "What happens if I unplug the Deck during a sync?"</strong></p>
+        <p><strong>A:</strong> The sync will fail mid-transfer. Files that were already uploaded stay on the Deck; the rest didn't make it. Just plug the Deck back in and run Sync to Deck again — the app will skip files that are already there and retry the rest.</p>
+
+        <p><strong>Q: "Can I use this on macOS or Linux?"</strong></p>
+        <p><strong>A:</strong> Deck ROM Sync is Windows-only (it uses Windows DPAPI for password encryption and Tkinter UI). On macOS or Linux, you'd need to compile from source or use alternative tools for ROM syncing.</p>
+
+        <p><strong>Q: "Where's my Deck's `HOTASMappings.Remap` file?"</strong></p>
+        <p><strong>A:</strong> That's for MechWarrior 5 on Deck, not related to emulation. Deck ROM Sync only manages ROMs and emulator files, not game-specific configs.</p>
+
+        <div class="note">
+            <strong>Still stuck?</strong> Check the README.md that came with Deck ROM Sync, or open an issue on GitHub with details about what you're trying to do and any error messages you see.
+        </div>
+
+    </div>
+
+</body>
+</html>
