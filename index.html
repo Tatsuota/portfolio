@@ -66,40 +66,42 @@
   <!-- ============ Elite Discoveries ============ -->
   <article class="project">
     <div class="shot">
-      <div class="shot-chrome"><span></span><span></span><span></span><em>Elite Discoveries — localhost:8765</em></div>
-      <img src="images/elite-discoveries.png" alt="Elite Discoveries app showing a stats strip and categorized list of first-discovered star systems" loading="lazy">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>Elite Discoveries</em></div>
+      <img src="images/elite-discoveries.png" alt="Elite Discoveries app showing categorized lists of star systems and codex entries with colour-coded headers" loading="lazy">
       <div class="shot-links">
         <span class="shot-links-label">Get the app:</span>
-        <a href="https://tatsuota.github.io/portfolio/downloads/Elite-Discoveries.exe">⬇ Windows app <small>.exe · 8 MB</small></a>
+        <a href="https://tatsuota.github.io/portfolio/downloads/Elite-Discoveries.exe">⬇ Windows app <small>.exe · 14 MB</small></a>
       </div>
     </div>
     <div class="info">
       <div class="meta">
-        <span class="type">Desktop / Local Web App</span>
+        <span class="type">Windows Native App</span>
         <span class="ai-badge">Built with Claude Code</span>
       </div>
       <h3>Elite Discoveries</h3>
-      <p class="lede">A first-discovery tracker for <em>Elite Dangerous</em> that turns the game's raw journal logs into a personal exploration record.</p>
+      <p class="lede">A first-discovery tracker for <em>Elite Dangerous</em> that reads a player's journals per-commander and organizes every find into searchable categories.</p>
       <p>
         Elite Dangerous writes everything a player does to local journal files, but the
         game itself has no screen where you can review which star systems you were the
-        first commander to find. This app fills that gap: it reads the journal folder
-        directly, follows which commander was logged in at the time of every scan, and
-        applies the game's own <code>WasDiscovered</code> / <code>WasMapped</code> /
-        <code>WasFootfalled</code> flags — so its results match the "Discovered by"
-        tags shown in-game. No login, no API key, and nothing leaves the machine.
+        first to find. This app fills that gap: on launch it presents a list of commanders
+        found in your journals; pick one and it reads every scan for that character,
+        applies the game's own <code>WasDiscovered</code> / <code>WasMapped</code> flags
+        to match in-game "Discovered by" tags, and organizes findings into categories with
+        colour-coded headers. It runs as a true native window via Edge WebView2, completely
+        offline — no login, no API key, and nothing ever leaves the machine.
       </p>
       <ul class="features">
-        <li>Parses 250+ journal files, keeps the earliest scan of each body, and skips scans made by other characters sharing the same save folder</li>
-        <li>Groups finds into the game's own categories — Earth-like worlds, water worlds, ammonia worlds, anomalies — with search, filters, sorting, and one-click name copy for the in-game galaxy map</li>
-        <li>"From here" mode reads your current location from the journals and re-sorts every discovery by light-year distance, banded nearest-first</li>
-        <li>Every planet gets a wireframe portrait drawn from its actual stats, alongside atmosphere, gravity, temperature, rings, bio/geo signals, and terraformable/landable badges</li>
-        <li>A Codex tab rebuilds your biological, geological, and astronomical finds from journal <code>CodexEntry</code> events, flagging first-logged entries</li>
-        <li>Optional commander profile card via Inara or EDSM keys, plus a working OAuth2 + PKCE login flow for Frontier's Companion API — keys stay server-side, never sent to the browser</li>
-        <li>Builds to a single self-contained <code>.exe</code> that opens in its own window, with installer and desktop-shortcut scripts</li>
+        <li>Commander picker on launch lets you read one character at a time; parses 250+ journal files to build that character's discovery record</li>
+        <li>Discoveries tab organizes finds into colour-coded category groups — Earth-Like Worlds (blue), Water Worlds (blue), Ammonia Worlds (green), Water+Ammonia (cyan), Anomalies (pink) — each with region sub-grouping</li>
+        <li>Single-column bars show system name, feature labels, and a one-click copy button to paste into the in-game galaxy map</li>
+        <li>Nearest-first mode: enter your current in-game system (or any previously-visited location) and re-sorts all discoveries by light-year distance in bands</li>
+        <li>A Codex tab rebuilds biological, geological, and astronomical finds from journal <code>CodexEntry</code> events, grouped by category and sub-category with a "first logged" flag</li>
+        <li>Every star system includes a holographic wireframe body portrait drawn from its actual stats, with atmosphere, gravity, temperature, rings, and bio/geo signal indicators</li>
+        <li>ED-style panels on a Claude-grey background; optional Inara or EDSM profile card (never required)</li>
+        <li>Builds to a single self-contained <code>.exe</code> with installer and desktop-shortcut scripts</li>
       </ul>
       <div class="tags">
-        <span>Python</span><span>JavaScript</span><span>HTML / CSS</span><span>HTTP Server</span><span>OAuth2</span><span>PyInstaller</span>
+        <span>Python</span><span>JavaScript</span><span>HTML / CSS</span><span>WebView2</span><span>PyInstaller</span>
       </div>
     </div>
   </article>
