@@ -263,6 +263,19 @@ code {
   font-weight: 400;
 }
 
+.shot-links .shot-link-src {
+  color: var(--text-dim);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+}
+
+.shot-links .shot-link-src:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+  background: transparent;
+}
+
 .shot-links .shot-link-live {
   color: #0e1310;
   background: linear-gradient(135deg, var(--accent-2), #38b2a3);
