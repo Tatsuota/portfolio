@@ -200,6 +200,7 @@
     <span class="h1-left">🤖 <span><span class="brand">Gunpla</span> Tracker</span></span>
     <span class="h1-actions">
       <button class="icon-btn" id="settingsBtn" title="Settings, export &amp; import" aria-label="Settings">⚙️</button>
+      <button class="add-btn" id="browseCatalogBtn">📚 Browse catalog</button>
       <button class="add-btn" id="addBtn">＋ Add kit</button>
     </span>
   </h1>
@@ -337,6 +338,43 @@
   </div>
 </div>
 
+<!-- ---------- Browse Catalog overlay ---------- -->
+<div class="detail-page" id="catalogPage">
+  <div class="detail-inner">
+    <div class="detail-topbar">
+      <button class="back-btn" onclick="closeCatalog()">‹ Back to collection</button>
+      <span class="detail-actions" style="gap:10px">
+        <span id="catalogStatus" style="font-size:13px;color:var(--text-secondary)"></span>
+      </span>
+    </div>
+    <div style="margin-bottom:16px">
+      <input type="search" class="search-input" id="catalogSearchInput" placeholder="Search by name, series, year…" style="margin-bottom:10px">
+      <div class="grade-tabs" id="catalogGradeTabs" style="margin-bottom:10px"></div>
+      <div id="catalogResultCount" style="font-size:12px;color:var(--text-secondary);margin-bottom:12px"></div>
+    </div>
+    <div id="catalogGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px;margin-bottom:20px"></div>
+    <div style="text-align:center;margin:20px 0">
+      <button class="ghost-btn" id="catalogLoadMoreBtn" style="display:none" onclick="catalogLoadMore()">Load more</button>
+      <p id="catalogNoMore" style="font-size:12px;color:var(--text-secondary);display:none">No more results</p>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- Catalog Preview modal ---------- -->
+<div class="modal-overlay" id="catalogPreviewModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <h2>Add from catalog</h2>
+      <button class="modal-close" onclick="closeCatalogPreview()" aria-label="Close">&times;</button>
+    </div>
+    <div id="catalogPreviewBody"></div>
+    <div class="modal-footer">
+      <button class="ghost-btn" onclick="closeCatalogPreview()">Cancel</button>
+      <button class="save-btn" id="catalogAddBtn" onclick="addFromCatalog()">＋ Add to my collection</button>
+    </div>
+  </div>
+</div>
+
 <!-- ---------- Lightbox ---------- -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lb-close" aria-label="Close">×</button>
@@ -410,6 +448,14 @@ let editBoxArt = '';           // pending box art data URL / URL
 let editPhotos = [];           // pending photo data URLs
 let editManual = null;         // pending {name,size,type,blob}
 let navStack = [];             // overlay history for back-button support
+let catalog = null;            // loaded catalog from catalog/catalog.json
+let catalogLoading = false;    // is catalog loading
+let catalogError = false;      // did catalog fail to load
+let catalogSearchQuery = '';   // current search in catalog
+let catalogGradeFilter = 'all';// current grade filter in catalog
+let catalogRenderedCount = 0;  // how many items currently shown in grid
+let catalogChunkSize = 60;     // how many to render at once for perf
+let catalogPreviewId = null;   // which catalog item is being previewed
 
 /* ==================== IndexedDB ==================== */
 let db = null;
@@ -587,6 +633,8 @@ function closeOverlayDom(name) {
   else if (name === 'edit') $('editModal').classList.remove('open');
   else if (name === 'settings') $('settingsModal').classList.remove('open');
   else if (name === 'detail') { $('detailPage').classList.remove('open'); detailId = null; }
+  else if (name === 'catalog') $('catalogPage').classList.remove('open');
+  else if (name === 'catalogPreview') $('catalogPreviewModal').classList.remove('open');
 }
 function navRemove(name) {
   // Closing via UI button: consume the matching history entry. popstate does
@@ -727,7 +775,7 @@ function renderDetail() {
     manual += `<div class="dl-row"><button class="dl-btn" onclick="downloadManual()">📄 Download instructions <small>PDF · ${fmtSize(kit.manual.size || (kit.manual.blob && kit.manual.blob.size) || 0)}</small></button></div>`;
   }
   if (kit.manualUrl) {
-    manual += `<div class="dl-row"><a class="dl-btn secondary" href="${esc(kit.manualUrl)}" target="_blank" rel="noopener">🔗 Open manual online</a></div>`;
+    manual += `<div class="dl-row"><a class="dl-btn" href="${esc(kit.manualUrl)}" target="_blank" rel="noopener" download>⬇ Download official manual (PDF)</a></div>`;
   }
   manual += `<div class="dl-row"><a class="dl-btn secondary" href="https://www.google.com/search?q=${encodeURIComponent('site:manual.bandai-hobby.net ' + kit.name)}" target="_blank" rel="noopener">🔎 Find it in Bandai's official manual library</a></div>`;
   if (!kit.manual && !kit.manualUrl) {
@@ -1026,12 +1074,215 @@ async function loadSamples() {
   toast(added ? `Added ${added} sample kits 🤖` : 'Sample kits are already loaded');
 }
 
+/* ==================== Browse Catalog ==================== */
+async function loadCatalog() {
+  if (catalog || catalogLoading) return;
+  if (catalogError) return; // don't retry if it failed
+  catalogLoading = true;
+  try {
+    const res = await fetch('catalog/catalog.json');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    catalog = await res.json();
+    if (!Array.isArray(catalog)) throw new Error('Invalid catalog format');
+  } catch (e) {
+    catalogError = true;
+    toast('Catalog not available ❌');
+  } finally {
+    catalogLoading = false;
+  }
+}
+
+function visibleCatalogKits() {
+  if (!catalog) return [];
+  const q = catalogSearchQuery.trim().toLowerCase();
+  return catalog.filter(k =>
+    (catalogGradeFilter === 'all' || k.grade === catalogGradeFilter) &&
+    (!q || [k.name, k.nameEn, k.nameJp, k.series].join(' ').toLowerCase().includes(q))
+  );
+}
+
+function renderCatalogTabs() {
+  if (!catalog) return;
+  const counts = {};
+  catalog.forEach(k => counts[k.grade] = (counts[k.grade] || 0) + 1);
+  let html = `<button class="grade-tab${catalogGradeFilter === 'all' ? ' active' : ''}" onclick="setCatalogGrade('all')">All <span class="cnt">${catalog.length}</span></button>`;
+  for (const g of GRADE_ORDER) {
+    if (!counts[g]) continue;
+    html += `<button class="grade-tab${catalogGradeFilter === g ? ' active' : ''}" onclick="setCatalogGrade('${g}')">` +
+      `<span class="dot" style="background:${GRADES[g].color}"></span>${GRADES[g].label} <span class="cnt">${counts[g]}</span></button>`;
+  }
+  $('catalogGradeTabs').innerHTML = html;
+}
+
+function renderCatalogGrid() {
+  if (!catalog) return;
+  const visible = visibleCatalogKits();
+  const toRender = visible.slice(0, catalogRenderedCount);
+
+  let html = toRender.map(item => {
+    const g = GRADES[item.grade] || GRADES.OTHER;
+    const thumb = `catalog/thumbs/${item.id}.jpg`;
+    return `<div class="kit-card" onclick="previewCatalogItem('${item.id}')">
+      <div class="kit-cover">
+        <img src="${thumb}" alt="${esc(item.nameEn)} box art" loading="lazy" onerror="this.src='${coverSrc({grade:item.grade,name:item.nameEn,scale:item.scale,series:item.series})}'">
+        <span class="grade-chip" style="background:${g.color}">${esc(g.label)}</span>
+      </div>
+      <div class="kit-body">
+        <p class="kit-name">${esc(item.nameEn)}</p>
+        <p class="kit-sub">${esc([item.scale, item.series].filter(Boolean).join(' · ') || g.full)}</p>
+      </div>
+    </div>`;
+  }).join('');
+
+  $('catalogGrid').innerHTML = html;
+
+  // Update result count and load-more button
+  const total = visible.length;
+  const showing = toRender.length;
+  $('catalogResultCount').textContent = total ? `${showing} of ${total} kit${total === 1 ? '' : 's'}` : 'No kits match';
+
+  const hasMore = showing < total;
+  $('catalogLoadMoreBtn').style.display = hasMore ? 'block' : 'none';
+  $('catalogNoMore').style.display = !hasMore && total > 0 ? 'block' : 'none';
+}
+
+function setCatalogGrade(g) {
+  catalogGradeFilter = g;
+  catalogRenderedCount = catalogChunkSize;
+  renderCatalogTabs();
+  renderCatalogGrid();
+}
+
+function catalogLoadMore() {
+  catalogRenderedCount += catalogChunkSize;
+  renderCatalogGrid();
+}
+
+function previewCatalogItem(id) {
+  if (!catalog) return;
+  catalogPreviewId = id;
+  const item = catalog.find(k => k.id === id);
+  if (!item) return;
+
+  const g = GRADES[item.grade] || GRADES.OTHER;
+  const thumb = `catalog/thumbs/${item.id}.jpg`;
+  const fallback = coverSrc({grade:item.grade,name:item.nameEn,scale:item.scale,series:item.series});
+
+  let body = `<img src="${thumb}" alt="${esc(item.nameEn)}" style="width:100%;max-height:280px;object-fit:contain;border-radius:var(--radius-md);border:0.5px solid var(--border);margin-bottom:14px;background:var(--bg-secondary)" onerror="this.src='${fallback}'">
+    <div class="detail-badges" style="margin-bottom:10px">
+      <span class="badge" style="background:${g.color}">${esc(g.label)}</span>
+      <span class="badge soft">${esc(item.scale)}</span>
+      <span class="badge soft">${item.year}</span>
+    </div>
+    <div style="margin-bottom:16px">
+      <p style="font-size:15px;font-weight:600;margin-bottom:2px">${esc(item.nameEn)}</p>
+      <p style="font-size:12px;color:var(--text-secondary)">${esc(item.series || '')}</p>
+    </div>`;
+
+  if (item.manualUrl) {
+    body += `<div class="dl-row" style="margin-bottom:14px">
+      <a class="dl-btn" href="${esc(item.manualUrl)}" target="_blank" rel="noopener" download>⬇ Download official manual (PDF)</a>
+    </div>`;
+  }
+
+  $('catalogPreviewBody').innerHTML = body;
+  $('catalogPreviewModal').classList.add('open');
+  navPush('catalogPreview');
+}
+
+function closeCatalogPreview() {
+  navRemove('catalogPreview');
+}
+
+async function addFromCatalog() {
+  if (!catalog || !catalogPreviewId) return;
+  const item = catalog.find(k => k.id === catalogPreviewId);
+  if (!item) return;
+
+  // Check if already in collection
+  if (kits.some(k => k.catalogId === item.id)) {
+    toast('Already in your collection ✓');
+    closeCatalogPreview();
+    return;
+  }
+
+  // Fetch and compress the thumbnail to a data URI
+  let boxArtData = '';
+  try {
+    const thumbUrl = `catalog/thumbs/${item.id}.jpg`;
+    const res = await fetch(thumbUrl);
+    if (res.ok) {
+      const blob = await res.blob();
+      boxArtData = await compressImage(blob, 800, 0.82);
+    }
+  } catch (e) {
+    // Fallback: use the catalog's boxArt URL if available
+    boxArtData = item.boxArt || '';
+  }
+
+  // Create the kit
+  const kit = {
+    id: uid(),
+    name: item.nameEn || item.nameJp || item.name,
+    grade: item.grade,
+    scale: item.scale,
+    series: item.series,
+    status: 'backlog',
+    desc: '',
+    boxArt: boxArtData,
+    photos: [],
+    manual: null,
+    manualUrl: item.manualUrl || '',
+    catalogId: item.id,
+    links: [],
+    added: Date.now(),
+  };
+
+  await idbPut(kit);
+  kits.push(kit);
+  closeCatalogPreview();
+  closeCatalog();
+  render();
+  toast(`Added ${item.nameEn} to your collection ✅`);
+}
+
+async function openCatalog() {
+  if (!catalog && !catalogError) await loadCatalog();
+
+  if (catalogError) {
+    $('catalogStatus').innerHTML = '<span style="color:var(--text-secondary)">Catalog unavailable</span>';
+  } else if (catalog) {
+    $('catalogStatus').textContent = '';
+  }
+
+  catalogSearchQuery = '';
+  catalogGradeFilter = 'all';
+  catalogRenderedCount = catalogChunkSize;
+  $('catalogSearchInput').value = '';
+  renderCatalogTabs();
+  renderCatalogGrid();
+
+  $('catalogPage').classList.add('open');
+  $('catalogPage').scrollTop = 0;
+  navPush('catalog');
+}
+
+function closeCatalog() {
+  navRemove('catalog');
+}
+
 /* ==================== Wiring ==================== */
 buildFormOptions();
 
 $('addBtn').addEventListener('click', openAdd);
 $('settingsBtn').addEventListener('click', openSettings);
+$('browseCatalogBtn').addEventListener('click', openCatalog);
 $('searchInput').addEventListener('input', e => { searchQuery = e.target.value; render(); });
+$('catalogSearchInput').addEventListener('input', e => {
+  catalogSearchQuery = e.target.value;
+  catalogRenderedCount = catalogChunkSize;
+  renderCatalogGrid();
+});
 
 $('fGrade').addEventListener('change', () => {
   const g = GRADES[$('fGrade').value];
@@ -1079,6 +1330,8 @@ document.addEventListener('keydown', e => {
   if ($('lightbox').classList.contains('open')) closeLightbox();
   else if ($('editModal').classList.contains('open')) closeEdit();
   else if ($('settingsModal').classList.contains('open')) closeSettings();
+  else if ($('catalogPreviewModal').classList.contains('open')) closeCatalogPreview();
+  else if ($('catalogPage').classList.contains('open')) closeCatalog();
   else if ($('detailPage').classList.contains('open')) closeDetail();
 });
 
