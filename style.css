@@ -170,7 +170,7 @@ code {
 
 .project:last-of-type { border-bottom: none; }
 
-.project:nth-of-type(even) .shot { order: 2; }
+.project:nth-of-type(even) .shot-col { order: 2; }
 .project:nth-of-type(even) .info { order: 1; }
 
 /* screenshot frame */
@@ -261,19 +261,6 @@ code {
   font-size: 0.72rem;
   font-family: var(--mono);
   font-weight: 400;
-}
-
-.shot-links .shot-link-src {
-  color: var(--text-dim);
-  background: transparent;
-  font-family: var(--mono);
-  font-size: 0.74rem;
-}
-
-.shot-links .shot-link-src:hover {
-  color: var(--text);
-  border-color: var(--text-faint);
-  background: transparent;
 }
 
 .shot-links .shot-link-live {
@@ -391,6 +378,33 @@ code {
   padding: 4px 10px;
 }
 
+/* ===== repo link (sits below the screenshot card) ===== */
+
+.repo-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 11px 16px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.repo-link:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.repo-arrow { color: var(--accent); font-weight: 400; }
+
 /* ===== about ===== */
 
 .about {
@@ -464,7 +478,7 @@ code {
 
 @media (max-width: 900px) {
   .project { grid-template-columns: 1fr; gap: 26px; padding: 44px 0; }
-  .project:nth-of-type(even) .shot { order: 0; }
+  .project:nth-of-type(even) .shot-col { order: 0; }
   .project:nth-of-type(even) .info { order: 0; }
   .about-grid { grid-template-columns: 1fr; }
   .hero { padding: 52px 24px 60px; }
@@ -533,7 +547,7 @@ code {
   }
 
   /* consistent image-left layout reads cleaner page after page */
-  .project:nth-of-type(even) .shot { order: 0; }
+  .project:nth-of-type(even) .shot-col { order: 0; }
   .project:nth-of-type(even) .info { order: 0; }
 
   /* compact type so a full card fits a single Letter page */
@@ -547,6 +561,8 @@ code {
   .meta { margin-bottom: 10px; }
   .type, .ai-badge { font-size: 0.62rem; padding: 3px 10px; }
   .shot { box-shadow: none; }
+  .shot-col { break-inside: avoid; }
+  .repo-link { margin-top: 9px; padding: 8px 13px; font-size: 0.75rem; }
   .shot-chrome { padding: 7px 11px; }
   .shot-chrome em { font-size: 0.66rem; }
   .shot-links { padding: 8px 11px; gap: 6px; }
