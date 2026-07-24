@@ -176,8 +176,8 @@ code {
 /* screenshot frame */
 
 .shot {
-  position: sticky;
-  top: 28px;
+  /* static, not sticky: screenshots stay locked in place while scrolling */
+  position: static;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
@@ -467,8 +467,6 @@ code {
   .project { grid-template-columns: 1fr; gap: 26px; padding: 44px 0; }
   .project:nth-of-type(even) .shot { order: 0; }
   .project:nth-of-type(even) .info { order: 0; }
-  /* single column on mobile — a sticky frame would sit over its own text */
-  .shot { position: static; }
   .about-grid { grid-template-columns: 1fr; }
   .hero { padding: 52px 24px 60px; }
 }
@@ -549,8 +547,7 @@ code {
   .tags span { font-size: 0.66rem; padding: 3px 8px; }
   .meta { margin-bottom: 10px; }
   .type, .ai-badge { font-size: 0.62rem; padding: 3px 10px; }
-  /* sticky is a scroll behaviour; pin the frame in place for the PDF */
-  .shot { box-shadow: none; position: static; }
+  .shot { box-shadow: none; }
   .shot-chrome { padding: 7px 11px; }
   .shot-chrome em { font-size: 0.66rem; }
   .shot-links { padding: 8px 11px; gap: 6px; }
