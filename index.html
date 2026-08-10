@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tyler Dalby | AI-Assisted Software Portfolio</title>
+<meta name="description" content="Tyler Dalby, self-taught software developer. Shipped desktop, web, and Android applications in Python and JavaScript: game-integration tooling, media-server automation, and hardware configuration utilities. Downloads and source code for every project.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tatsuota.github.io/portfolio/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tyler Dalby | AI-Assisted Software Portfolio">
+<meta property="og:description" content="Self-taught software developer shipping desktop, web, and Android applications in Python and JavaScript, with screenshots, downloads, and source code.">
+<meta property="og:url" content="https://tatsuota.github.io/portfolio/">
+<meta property="og:image" content="https://tatsuota.github.io/portfolio/images/elite-discoveries.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Tyler Dalby",
+  "email": "mailto:tylerdalby8@gmail.com",
+  "url": "https://tatsuota.github.io/portfolio/",
+  "jobTitle": "AI-Assisted Software Developer",
+  "knowsAbout": ["Python", "JavaScript", "Android", "AI-assisted development", "AI coding tools"]
+}
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav container">
+    <div class="nav-ident">
+      <span class="nav-brand">Tyler Dalby</span>
+      <div class="nav-contact">
+        <a href="mailto:tylerdalby8@gmail.com">tylerdalby8@gmail.com</a>
+        <span class="nav-dot">·</span>
+        <a href="https://github.com/Tatsuota" target="_blank" rel="noopener">github.com/Tatsuota</a>
+      </div>
+      <a class="nav-site print-only" href="https://tatsuota.github.io/portfolio/">tatsuota.github.io/portfolio</a>
+    </div>
+    <div class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <div class="hero container">
+    <p class="hero-kicker">Self-Taught Software Developer</p>
+    <h1>I build the tools<br>I wish existed.</h1>
+    <p class="hero-sub">
+      Desktop, web, and Android applications in Python and JavaScript. Hand-rolled
+      OAuth2 flows, SMB networking, and packaged Windows installers, not tutorial
+      projects. Every project below started as a problem I actually had: a game
+      that won't show you your own discoveries, two joysticks it can't tell apart,
+      a media library that won't organize itself. Nine years in live event
+      operations, where the deadline is doors-open and it doesn't move, taught me
+      to own a problem from requirements through delivery. I use AI development
+      tools to move faster, and I still ship tests, documentation, and a build
+      someone can install and run.
+    </p>
+    <ul class="hero-stack">
+      <li>Python</li><li>JavaScript</li><li>REST / JSON APIs</li><li>OAuth2</li>
+      <li>SMB networking</li><li>Tkinter</li><li>pytest</li><li>PyInstaller</li>
+      <li>Android</li><li>Git &amp; GitHub</li>
+    </ul>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Applications shipped &amp; in daily use</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Platforms: Windows, web, Android</span></div>
+      <div class="stat"><span class="stat-num">9+</span><span class="stat-label">Years client-facing operations</span></div>
+    </div>
+    <a class="hero-live print-only" href="https://tatsuota.github.io/portfolio/">🌐 View the live portfolio &nbsp;·&nbsp; tatsuota.github.io/portfolio</a>
+  </div>
+</header>
+
+<main id="projects" class="container">
+  <h2 class="section-title">Projects</h2>
+
+  <!-- ============ Elite Discoveries ============ -->
+  <article class="project">
+    <div class="shot">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>Elite Discoveries</em></div>
+      <img src="images/elite-discoveries.png" alt="Elite Discoveries app showing categorized lists of star systems and codex entries with colour-coded headers" loading="lazy">
+      <div class="shot-links">
+        <span class="shot-links-label">Get the app:</span>
+        <a href="https://tatsuota.github.io/portfolio/downloads/Elite-Discoveries.exe">⬇ Windows app <small>.exe · 13 MB</small></a>
+        <a class="shot-link-src" href="https://github.com/Tatsuota/elite-discoveries" target="_blank" rel="noopener">&lt;/&gt; Source code</a>
+      </div>
+    </div>
+    <div class="info">
+      <div class="meta">
+        <span class="type">Windows Native App</span>
+      </div>
+      <h3>Elite Discoveries</h3>
+      <p class="lede">A first-discovery tracker for <em>Elite Dangerous</em> that reads a player's journals per-commander and organizes every find into searchable categories.</p>
+      <p>
+        Elite Dangerous writes everything a player does to local journal files, but the
+        game itself has no screen where you can review which star systems you were the
+        first to find. This app fills that gap: on launch it presents a list of commanders
+        found in your journals; pick one and it reads every scan for that character,
+        applies the game's own <code>WasDiscovered</code> / <code>WasMapped</code> flags
+        to match in-game "Discovered by" tags, and organizes findings into categories with
+        colour-coded headers. It runs as a true native window via Edge WebView2, completely
+        offline: no login, no API key, and nothing ever leaves the machine.
+      </p>
+      <ul class="features">
+        <li>Commander picker on launch lets you read one character at a time; parses 250+ journal files to build that character's discovery record</li>
+        <li>Discoveries tab organizes finds into colour-coded category groups: Earth-Like Worlds (blue), Water Worlds (blue), Ammonia Worlds (green), Water+Ammonia (cyan), Anomalies (pink), each with region sub-grouping</li>
+        <li>Single-column bars show system name, feature labels, and a one-click copy button to paste into the in-game galaxy map</li>
+        <li>Nearest-first mode: enter your current in-game system (or any previously-visited location) and re-sorts all discoveries by light-year distance in bands</li>
+        <li>A Codex tab rebuilds biological, geological, and astronomical finds from journal <code>CodexEntry</code> events, grouped by category and sub-category with a "first logged" flag</li>
+        <li>Every star system includes a holographic wireframe body portrait drawn from its actual stats, with atmosphere, gravity, temperature, rings, and bio/geo signal indicators</li>
+        <li>Stats strip totals systems first-discovered, bodies discovered and mapped, first footfalls, and Earth-like / water / ammonia world counts at a glance</li>
+        <li>Elite-style panels on a warm grey background, with a redaction mode that masks the commander name for screenshots and streaming</li>
+        <li>Builds to a single self-contained <code>.exe</code> with installer and desktop-shortcut scripts</li>
+      </ul>
+      <div class="tags">
+        <span>Python</span><span>JavaScript</span><span>HTML / CSS</span><span>WebView2</span><span>PyInstaller</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ MW5 VKB Mapper ============ -->
+  <article class="project">
+    <div class="shot">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>MW5 VKB HOSAS Mapper</em></div>
+      <img src="images/mw5-vkb-mapper.png" alt="MW5 VKB HOSAS Mapper showing dual-stick binding editor with axis and button sections, device panel, and stick diagram" loading="lazy">
+      <div class="shot-links">
+        <span class="shot-links-label">Get the app:</span>
+        <a href="https://tatsuota.github.io/portfolio/downloads/MW5-VKB-Mapper.exe">⬇ Windows app <small>.exe · 24 MB</small></a>
+        <a class="shot-link-src" href="https://github.com/Tatsuota/mw5-vkb-mapper" target="_blank" rel="noopener">&lt;/&gt; Source code</a>
+      </div>
+    </div>
+    <div class="info">
+      <div class="meta">
+        <span class="type">Installable Windows App</span>
+      </div>
+      <h3>MW5 VKB HOSAS Mapper</h3>
+      <p class="lede">Maps two VKB Gladiator EVO sticks for MechWarrior 5 and MechWarrior Online, with a binding editor, live control indicator, and atomic config writes to three different game formats.</p>
+      <p>
+        MechWarrior 5 and MechWarrior Online have no built-in dual-joystick setup UI. This app fills that gap: it detects both sticks over USB, shows which control you're moving in real time with an on-screen diagram, and lets you bind in-game actions by simply pressing a button or moving an axis. It writes three different config formats surgically — only changing the bindings you set, leaving everything else untouched — with atomic writes so a failure can never corrupt the live game file. It auto-syncs changes as you edit, and ships as a one-click installer.
+      </p>
+      <ul class="features">
+        <li>Live device panel identifies every button and axis as you move it; hovering explains what each action does in the cockpit</li>
+        <li>Two-section editor: <strong>Axis</strong> and <strong>Buttons</strong>, each row showing the in-game action and keybind (click to bind, press a control)</li>
+        <li>Photo-based stick diagram showing the VKB grips (Standard or OTA); press a physical control and its marker lights up green</li>
+        <li>Auto-detects MechWarrior 5: Mercenaries, MW5: Clans, and MechWarrior Online; each has its own keybind vocabulary and config format (MW5's <code>HOTASMappings.Remap</code> and <code>GameUserSettings.ini</code>, MWO's <code>actionmaps.xml</code>)</li>
+        <li>Writes surgically: only touched bindings change, unrelated config stays put, and a backup is written each time</li>
+        <li>Auto-sync pushes edits to the live game files in real time</li>
+        <li>Per-axis invert and deadzone tuning; saved profiles; conflict warning when two identical sticks share a USB VID/PID (with the firmware fix explained)</li>
+        <li>Guided calibration wizard, and one-click unbind for any action</li>
+        <li>Installs via <code>Install MW5 VKB Mapper.bat</code> — creates Start Menu + Desktop shortcuts, no Python needed</li>
+      </ul>
+      <div class="tags">
+        <span>Python</span><span>Tkinter</span><span>pygame</span><span>Pillow</span><span>PyInstaller</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ Anime Tracker ============ -->
+  <article class="project">
+    <div class="shot">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>Anime Tracker</em></div>
+      <img src="images/anime-tracker.png" alt="Anime Tracker showing a weekly grid of currently airing shows with poster art, air times, and streaming platforms" loading="lazy">
+      <div class="shot-links">
+        <span class="shot-links-label">Get the app:</span>
+        <a class="shot-link-live" href="https://tatsuota.github.io/portfolio/downloads/Anime-Tracker.html" target="_blank" rel="noopener">▶ Use it in your browser</a>
+        <a href="https://tatsuota.github.io/portfolio/downloads/Anime-Tracker.exe">⬇ Windows app <small>.exe · 13 MB</small></a>
+        <a href="https://tatsuota.github.io/portfolio/downloads/Anime-Tracker-Android.apk">⬇ Android app <small>.apk · 5 MB</small></a>
+        <a class="shot-link-src" href="https://github.com/Tatsuota/anime-tracker" target="_blank" rel="noopener">&lt;/&gt; Source code</a>
+      </div>
+    </div>
+    <div class="info">
+      <div class="meta">
+        <span class="type">Web App · Desktop · Android</span>
+      </div>
+      <h3>Anime Tracker</h3>
+      <p class="lede">A weekly airing-schedule tracker for the current anime season, shipped three ways from one codebase: browser, installable desktop app, and native Android build.</p>
+      <p>
+        Keeping up with a season of anime means checking several streaming services and
+        release calendars; this app collapses that into one glanceable page. It queries
+        the AniList and Jikan (MyAnimeList) APIs for the season's schedule, converts
+        every air time into the viewer's local timezone, and lays out each day as a row
+        of poster cards: what airs today, what episode number it's on, and where it
+        streams. The whole thing is a single HTML file with no build step, which is
+        also what makes the desktop and Android wrappers practical.
+      </p>
+      <ul class="features">
+        <li>Live season data from the AniList and Jikan APIs, laid out on a Sunday-to-Saturday strip with back/forward week navigation</li>
+        <li>Each show card carries poster art, air time in your timezone, season and episode number, and SUB/DUB availability tags</li>
+        <li>Streaming-platform filter row for Crunchyroll, Netflix, Hulu, Prime Video, HIDIVE, and more, with matching badges on every card</li>
+        <li>A per-day count shows how many shows air that day; the current day is highlighted on the strip</li>
+        <li>The entire web app is one self-contained HTML file: open it in any browser and it just runs, with no server and no install</li>
+        <li>Desktop edition installs Start-menu and desktop shortcuts with its own icon and opens in a standalone app window</li>
+        <li>Android edition is a native Gradle project that installs as a normal APK</li>
+      </ul>
+      <div class="tags">
+        <span>JavaScript</span><span>HTML / CSS</span><span>AniList API</span><span>Jikan API</span><span>Android</span><span>Gradle</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ Plex Media Manager ============ -->
+  <article class="project">
+    <div class="shot">
+      <div class="shot-chrome"><span></span><span></span><span></span><em>Plex Media Manager: Settings</em></div>
+      <img src="images/plex-media-manager.png" alt="Plex Media Manager desktop app showing phone pairing, UGREEN NAS connection settings, and Plex server integration" loading="lazy">
+      <div class="shot-links">
+        <span class="shot-links-label">Get the app:</span>
+        <a href="https://tatsuota.github.io/portfolio/downloads/Plex-Media-Manager.exe">⬇ Windows app <small>.exe · 8 MB</small></a>
+        <a href="https://tatsuota.github.io/portfolio/downloads/Plex-Media-Manager-Android.apk">⬇ Android app <small>.apk · 5 MB</small></a>
+        <a class="shot-link-src" href="https://github.com/Tatsuota/plex-media-manager" target="_blank" rel="noopener">&lt;/&gt; Source code</a>
+      </div>
+    </div>
+    <div class="info">
+      <div class="meta">
+        <span class="type">Desktop App · Android · CLI</span>
+      </div>
+      <h3>Plex Media Manager</h3>
+      <p class="lede">A desktop app with a companion Android client that connects a Windows Plex host to a NAS, organizes a personal media library into Plex's exact naming conventions, and browses the result with cover art and search.</p>
+      <p>
+        Plex only auto-fetches posters, summaries, and cast info when files follow its
+        strict folder and naming rules, and a NAS-based setup adds its own pitfalls:
+        Plex's background service can't even see mapped drive letters. This app manages
+        that whole arrangement: it verifies the SMB connection to the NAS share, builds
+        the folder tree Plex expects, and renames and relocates existing media files to
+        match. Organizing is dry-run by default: every planned move is printed for
+        review before anything is touched. One Python engine powers three surfaces: a
+        windowed desktop app, an Android client, and a CLI for automation.
+      </p>
+      <ul class="features">
+        <li>Connection check covers SMB reachability, a real write-permission test on the share, and a free-space report</li>
+        <li>Parses messy file names into Plex's <code>Movie (Year)</code> and <code>Show - s01e01</code> structures; subtitle and metadata sidecar files are renamed and moved with their media</li>
+        <li>Dry-run by default: the organizer prints its full plan, and only <code>--apply</code> (or the desktop confirm) commits it</li>
+        <li>Uses UNC paths rather than mapped drives throughout, so the Plex service always sees the library</li>
+        <li>Point it at the Plex server (URL + token) and it becomes a library browser: cover art, categories, and name search across everything Plex has catalogued</li>
+        <li>The Android app pairs with the desktop app over home Wi-Fi by entering the address the desktop shows, with no cloud account involved</li>
+        <li>Packaged as a standalone Windows <code>.exe</code>; all settings stay local in <code>config.json</code></li>
+      </ul>
+      <div class="tags">
+        <span>Python</span><span>HTTP Server</span><span>Android</span><span>SMB / NAS</span><span>Plex API</span><span>PyInstaller</span>
+      </div>
+    </div>
+  </article>
+</main>
+
+<section id="about" class="about">
+  <div class="container">
+    <h2 class="section-title">About This Work</h2>
+    <div class="about-grid">
+      <div class="about-card">
+        <h4>AI-assisted, human-directed</h4>
+        <p>Each project was built through iterative sessions with AI coding tools: I define the product, the requirements, and the edge cases; the AI accelerates implementation. The result is production-quality software delivered far faster than solo development.</p>
+      </div>
+      <div class="about-card">
+        <h4>Real users, real constraints</h4>
+        <p>These aren't demos. They parse real game journals, write real config files with backup safety, talk to real hardware over USB, and manage a live media server, with the error handling that daily use demands.</p>
+      </div>
+      <div class="about-card">
+        <h4>Full delivery pipeline</h4>
+        <p>Projects ship as packaged Windows executables with installers, icons, and desktop shortcuts, plus test suites, README documentation, and clean git history. Shipping is part of the skill.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact" class="site-footer">
+  <div class="container">
+    <h2>Let's build something.</h2>
+    <p>Open to AI-assisted development roles and projects.</p>
+    <a class="contact-btn" href="mailto:tylerdalby8@gmail.com">tylerdalby8@gmail.com</a>
+    <p class="footer-note">© 2026 Tyler Dalby</p>
+  </div>
+</footer>
+
+</body>
+</html>
