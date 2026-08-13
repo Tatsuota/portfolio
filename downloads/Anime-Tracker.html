@@ -114,6 +114,13 @@
   .save-btn { padding: 8px 22px; font-size: 13px; font-weight: 600; border-radius: 99px; border: none; background: var(--accent); color: #fff; cursor: pointer; transition: filter 0.15s; }
   .save-btn:hover { filter: brightness(1.08); }
   .browser-opt.pending { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .no-links { font-size: 10px; color: var(--text-secondary); opacity: 0.75; font-style: italic; }
+  .fav-btn { position: absolute; top: 6px; right: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: none; border-radius: 99px; background: rgba(0,0,0,0.55); color: #fff; font-size: 16px; line-height: 1; cursor: pointer; padding: 0; transition: transform 0.12s, background 0.15s; }
+  .fav-btn:hover { background: rgba(0,0,0,0.75); transform: scale(1.08); }
+  .fav-btn.on { color: #ffd54a; }
+  .filter-chip.fav-chip.active { background: #ffd54a; color: #3a2f00; }
+  .empty .hint { display: block; font-size: 11px; margin-top: 6px; opacity: 0.8; }
 </style>
 </head>
 <body>
@@ -259,6 +266,54 @@ const MAX_WEEK = 10;
 let activeWeek = 0, activeDay = TODAY_IDX, schedPlatFilter = 'all';
 const cacheKey = (wk, day) => `w${wk}d${day}`;
 
+/* ---------- Favorites (drives episode notifications on Android) ---------- */
+const FAV_KEY = 'animeTrackerFavorites';
+let favorites = (() => {
+  try { return JSON.parse(localStorage.getItem(FAV_KEY)) || {}; }
+  catch (e) { return {}; }
+})();
+function favKey(a) { return String(a.alId || a.malId || normTitle(a.title)); }
+function isFav(a) { return Object.prototype.hasOwnProperty.call(favorites, favKey(a)); }
+function favCount() { return Object.keys(favorites).length; }
+// Mirror favorites into the Android layer so the background worker can check
+// airing times for starred shows even while the app is closed.
+function syncFavoritesToNative() {
+  try {
+    if (window.AnimeTracker && typeof window.AnimeTracker.setFavorites === 'function') {
+      window.AnimeTracker.setFavorites(JSON.stringify(Object.values(favorites)));
+    }
+  } catch (e) { /* not running inside the Android app */ }
+}
+function toggleFav(a) {
+  const k = favKey(a);
+  if (isFav(a)) delete favorites[k];
+  else favorites[k] = { key: k, alId: a.alId || null, malId: a.malId || null, title: a.title };
+  try { localStorage.setItem(FAV_KEY, JSON.stringify(favorites)); } catch (e) {}
+  syncFavoritesToNative();
+}
+
+/* ---------- Offline cache: last-fetched schedule survives restarts ---------- */
+const SCHED_STORE_KEY = 'animeTrackerScheduleCache';
+const SCHED_STORE_TTL = 24 * 3600 * 1000;   // don't show schedules older than a day
+const fromDisk = new Set();                 // keys rendered from cache, still worth refreshing
+function persistSchedule() {
+  try {
+    localStorage.setItem(SCHED_STORE_KEY, JSON.stringify({ savedAt: Date.now(), weeks: schedCache }));
+  } catch (e) { /* quota — cache is best-effort */ }
+}
+function loadPersistedSchedule() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(SCHED_STORE_KEY));
+    if (!raw || !raw.weeks || (Date.now() - raw.savedAt) > SCHED_STORE_TTL) return;
+    Object.keys(raw.weeks).forEach(k => {
+      if (Array.isArray(raw.weeks[k]) && raw.weeks[k].length) {
+        schedCache[k] = raw.weeks[k];
+        fromDisk.add(k);
+      }
+    });
+  } catch (e) { /* corrupt cache — ignore */ }
+}
+
 const DUB_SITES = new Set(['funimation','hidive']);
 const PINNED_PLATFORMS = ['Crunchyroll', 'Netflix', 'Hulu', 'Amazon Prime Video'];
 
@@ -400,15 +455,36 @@ async function fetchAniListPage(start, end, page) {
 // A link counts as "streaming" if AniList tags it STREAMING, or its site is a
 // known streaming platform (catches occasional mis-typed links).
 const KNOWN_STREAM_KEYS = Object.keys(PLAT);
-// Sites we never want to show as links.
-const BLOCKED_SITES = ['oceanveil'];
-function isBlockedSite(l) {
-  const s = ((l.site || l.name || '') + ' ' + (l.url || '')).toLowerCase();
-  return BLOCKED_SITES.some(b => s.includes(b));
+
+// ALLOWLIST — only officially licensed platforms are ever linked.
+// AniList's external links are community-submitted, so an unlicensed streaming
+// site can appear at any time. A blocklist can only catch what we already know
+// about; Google Play treats a single link to pirated content as grounds for
+// removal, so this deliberately fails closed: unknown host => no link shown.
+const ALLOWED_STREAM_HOSTS = [
+  'crunchyroll.com', 'netflix.com', 'hulu.com', 'disneyplus.com', 'hotstar.com',
+  'primevideo.com', 'amazon.com', 'amazon.co.jp', 'amazon.co.uk', 'hidive.com',
+  'max.com', 'hbomax.com', 'peacocktv.com', 'tubitv.com', 'youtube.com',
+  'bilibili.tv', 'bilibili.com', 'iq.com', 'iqiyi.com', 'wetv.vip', 'viki.com',
+  'rakuten.tv', 'pluto.tv', 'starplus.com', 'viu.com', 'vidio.com',
+  'laftel.net', 'tving.com', 'coupangplay.com', 'anime-onegai.com',
+  'muse.tw', 'ani-one.com', 'aniplus-asia.com', 'catchplay.com', 'abema.tv',
+  'unext.jp', 'nicovideo.jp', 'dmm.com', 'dmkt-sp.jp', 'tver.jp',
+  'fod.fujitv.co.jp', 'wowow.co.jp', 'ani.tv', 'b-ch.com', 'video.tv.tokyo',
+  'anime.shochiku.co.jp', 'bandaichannel.jp', 'gyao.yahoo.co.jp'
+];
+function hostOf(u) {
+  try { return new URL(u).hostname.toLowerCase().replace(/^www\./, ''); }
+  catch (e) { return ''; }
+}
+function isAllowedStreamHost(u) {
+  const h = hostOf(u);
+  if (!h) return false;
+  return ALLOWED_STREAM_HOSTS.some(d => h === d || h.endsWith('.' + d));
 }
 function isStreamingLink(l) {
-  if (!l || !l.url) return false;
-  if (isBlockedSite(l)) return false;
+  if (!l || !safeUrl(l.url)) return false;
+  if (!isAllowedStreamHost(l.url)) return false;   // fail closed
   if (l.type === 'STREAMING') return true;
   if (l.type === 'INFO' || l.type === 'SOCIAL') {
     const s = (l.site || '').toLowerCase();
@@ -460,8 +536,13 @@ async function loadDay(idx) {
   const isTodayCell = activeWeek === 0 && idx === TODAY_IDX;
   document.getElementById('dayLabel').textContent = DAYS[idx] + (isTodayCell ? ' (today)' : '');
   document.getElementById('dayCount').textContent = '';
-  if (schedCache[key]) { renderSched(schedCache[key]); return; }
-  document.getElementById('schedGrid').innerHTML = `<div class="loading-grid">${Array(10).fill('<div class="skeleton"></div>').join('')}</div>`;
+  if (schedCache[key] && !fromDisk.has(key)) { renderSched(schedCache[key]); return; }
+  if (schedCache[key]) {
+    // Came from the offline cache: show it immediately, then refresh in place.
+    renderSched(schedCache[key]);
+  } else {
+    document.getElementById('schedGrid').innerHTML = `<div class="loading-grid">${Array(10).fill('<div class="skeleton"></div>').join('')}</div>`;
+  }
 
   const sun = weekSunday(activeWeek);
   const target = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() + idx);
@@ -497,6 +578,8 @@ async function loadDay(idx) {
   const unified = dedupMerge([...alEntries, ...jikanEntries])
     .sort((a,b) => (a.airingAt||Infinity) - (b.airingAt||Infinity));
   schedCache[key] = unified;
+  fromDisk.delete(key);          // now backed by a live fetch
+  persistSchedule();             // keep the offline copy current
   if (cacheKey(activeWeek, activeDay) === key) renderSched(unified);
 }
 
@@ -550,13 +633,34 @@ function getPlatformNames(streams) {
   return (streams||[]).map(s => (s.site || s.name || '').trim()).filter(Boolean);
 }
 
+const FAV_FILTER_LABEL = '★ Favorites';
+
+// Star toggling is delegated from the grid so cards stay pure markup.
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.fav-btn');
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const data = schedCache[cacheKey(activeWeek, activeDay)] || [];
+  const entry = data.find(a => favKey(a) === btn.dataset.fav);
+  if (!entry) return;
+  toggleFav(entry);
+  renderSched(data);
+});
+
 function buildFilterRow(containerId, platforms, activeFilter, onSelect) {
   const row = document.getElementById(containerId);
   const merged = [...PINNED_PLATFORMS];
   platforms.forEach(p => { if (!merged.some(m => m.toLowerCase() === p.toLowerCase())) merged.push(p); });
-  const all = ['All', ...merged];
+  const all = ['All', FAV_FILTER_LABEL, ...merged];
   row.innerHTML = all.map(p => {
-    const isActive = (p === 'All' && activeFilter === 'all') || p === activeFilter;
+    const isFavChip = p === FAV_FILTER_LABEL;
+    const isActive = (p === 'All' && activeFilter === 'all')
+      || (isFavChip && activeFilter === 'favorites')
+      || p === activeFilter;
+    if (isFavChip) {
+      return `<button class="filter-chip fav-chip${isActive ? ' active' : ''}" data-filter="favorites">${esc(FAV_FILTER_LABEL)}${favCount() ? ' (' + favCount() + ')' : ''}</button>`;
+    }
     const plat = p === 'All' ? null : getPlatform(p);
     const rawBg = isActive ? (plat ? plat.bg : 'var(--accent)') : '';
     // Only literal hex colors (or the theme var) reach the style attribute.
@@ -578,10 +682,20 @@ function renderSched(data) {
   const platSet = new Set();
   data.forEach(a => getPlatformNames(a.streams).forEach(p => platSet.add(p)));
   buildFilterRow('schedFilterRow', [...platSet], schedPlatFilter, (p) => { schedPlatFilter = p; renderSched(schedCache[cacheKey(activeWeek, activeDay)]); });
-  const filtered = schedPlatFilter === 'all' ? data : data.filter(a => getPlatformNames(a.streams).some(p => p === schedPlatFilter));
+  const filtered =
+    schedPlatFilter === 'all' ? data
+    : schedPlatFilter === 'favorites' ? data.filter(isFav)
+    : data.filter(a => getPlatformNames(a.streams).some(p => p === schedPlatFilter));
+
+  const emptyMsg = schedPlatFilter === 'favorites'
+    ? (favCount()
+        ? `<i class="ti ti-star"></i>None of your favorites air on this day.`
+        : `<i class="ti ti-star"></i>No favorites yet.<span class="hint">Tap ☆ on any show to follow it and get notified before it airs.</span>`)
+    : `<i class="ti ti-filter-off"></i>No anime on ${esc(schedPlatFilter)} today.`;
+
   document.getElementById('schedGrid').innerHTML = filtered.length
     ? `<div class="anime-grid">${filtered.map(schedCardHTML).join('')}</div>`
-    : `<div class="empty"><i class="ti ti-filter-off"></i>No anime on ${esc(schedPlatFilter)} today.</div>`;
+    : `<div class="empty">${emptyMsg}</div>`;
 }
 
 // Escape untrusted text before interpolating into HTML (text or quoted attrs).
@@ -623,7 +737,9 @@ function schedCardHTML(a) {
         const label = name.replace(' TV','').replace(' Global','');
         return `<a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer" class="pill" style="background:${bg};color:#fff" title="${esc(name)}">${esc(label)}</a>`;
       }).join('')}</div>`
-    : `<a href="${esc(safeUrl(a.infoUrl))}" target="_blank" rel="noopener noreferrer" class="mal-link"><i class="ti ti-external-link" style="font-size:10px"></i>${a.source==='anilist'?'AniList':'MAL'}</a>`;
+    // No AniList/MAL fallback link — only official streaming platforms are ever
+    // surfaced. Shows with no licensed stream just say so.
+    : `<span class="no-links">No official stream listed</span>`;
 
   const dubKey = a.malId || a.alId;
   const dubSt = dubCache[dubKey] || dubStatusFromStreams(a.streams) || 'sub';
@@ -642,6 +758,9 @@ function schedCardHTML(a) {
   return `<div class="card">
     <div class="card-cover">
       ${coverHTML}
+      <button class="fav-btn${isFav(a) ? ' on' : ''}" data-fav="${esc(favKey(a))}"
+        aria-label="${isFav(a) ? 'Remove from favorites' : 'Add to favorites'}"
+        title="${isFav(a) ? 'Favorited — you\'ll be notified before it airs' : 'Favorite this show'}">${isFav(a) ? '★' : '☆'}</button>
       ${timeStr ? `<div class="time-chip"><i class="ti ti-clock" style="font-size:9px"></i>${esc(timeStr)}<span style="opacity:0.7;font-size:9px;margin-left:2px">${esc(tzStr)}</span></div>` : ''}
     </div>
     <div class="card-body">
@@ -772,6 +891,8 @@ settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal)
 document.getElementById('prevWeek').addEventListener('click', () => changeWeek(-1));
 document.getElementById('nextWeek').addEventListener('click', () => changeWeek(1));
 
+loadPersistedSchedule();   // offline: show the last known schedule instantly
+syncFavoritesToNative();   // keep the notification worker's list current on launch
 buildWeekLabel();
 buildDayRow();
 loadDay(activeDay);
