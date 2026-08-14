@@ -106,14 +106,15 @@
       </p>
       <ul class="features">
         <li>Commander picker on launch lets you read one character at a time; parses 250+ journal files to build that character's discovery record</li>
-        <li>Discoveries tab organizes finds into colour-coded category groups: Earth-Like Worlds (blue), Water Worlds (blue), Ammonia Worlds (green), Water+Ammonia (cyan), Anomalies (pink), each with region sub-grouping</li>
+        <li>Discoveries tab organizes finds into colour-coded category groups — Earth-Like Worlds, Water Worlds (blue), Ammonia Worlds (green), Water + Ammonia (cyan) and Anomalies (pink) — with the chosen sort applied inside each group</li>
         <li>Single-column bars show system name, feature labels, and a one-click copy button to paste into the in-game galaxy map</li>
         <li>Nearest-first mode: enter your current in-game system (or any previously-visited location) and re-sorts all discoveries by light-year distance in bands</li>
         <li>A Codex tab rebuilds biological, geological, and astronomical finds from journal <code>CodexEntry</code> events, grouped by category and sub-category with a "first logged" flag</li>
         <li>Every star system includes a holographic wireframe body portrait drawn from its actual stats, with atmosphere, gravity, temperature, rings, and bio/geo signal indicators</li>
-        <li>Stats strip totals systems first-discovered, bodies discovered and mapped, first footfalls, and Earth-like / water / ammonia world counts at a glance</li>
+        <li>Stats strip totals systems first-discovered, bodies discovered and mapped, and Earth-like / water / ammonia world counts at a glance</li>
+        <li>Parses 259 journals in about a second, then caches each file against its size and timestamp — since journals are append-only, a refresh only re-reads the one the game is still writing</li>
         <li>Elite-style panels on a warm grey background, with a redaction mode that masks the commander name for screenshots and streaming</li>
-        <li>Builds to a single self-contained <code>.exe</code> with installer and desktop-shortcut scripts</li>
+        <li>Builds to a single self-contained <code>.exe</code>, with a script that adds Desktop and Start-Menu shortcuts</li>
       </ul>
       <div class="tags">
         <span>Python</span><span>JavaScript</span><span>HTML / CSS</span><span>WebView2</span><span>PyInstaller</span>
