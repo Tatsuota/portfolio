@@ -101,10 +101,11 @@
         found in your journals; pick one and it reads every scan for that character,
         applies the game's own <code>WasDiscovered</code> / <code>WasMapped</code> flags
         to match in-game "Discovered by" tags, and organizes findings into categories with
-        colour-coded headers. The UI automatically matches your in-game Elite Dangerous HUD
-        colour scheme, whether you've customized it with EDHM-UI or use the game's native
-        settings. It runs as a true native window via Edge WebView2, completely offline: no login,
-        no API key, and nothing ever leaves the machine.
+        colour-coded headers. The UI ships with a neutral dark theme — near-black with
+        steel-grey accents — and includes a HUD switch in the top bar that overlays your
+        in-game Elite Dangerous HUD colour scheme on top of that dark base. It runs as a true
+        native window via Edge WebView2, completely offline: no login, no API key, and
+        nothing ever leaves the machine.
       </p>
       <ul class="features">
         <li>Commander picker on launch lets you read one character at a time; parses 250+ journal files to build that character's discovery record</li>
@@ -115,8 +116,8 @@
         <li>Every star system includes a holographic wireframe body portrait drawn from its actual stats, with atmosphere, gravity, temperature, rings, and bio/geo signal indicators</li>
         <li>Stats strip totals systems first-discovered, bodies discovered and mapped, and Earth-like / water / ammonia world counts at a glance</li>
         <li>Parses 259 journals in about a second, then caches each file against its size and timestamp — since journals are append-only, a refresh only re-reads the one the game is still writing</li>
-        <li>Elite-style panels on a warm grey background, with a redaction mode that masks the commander name for screenshots and streaming</li>
-        <li>HUD Colour Matching: UI theme automatically syncs to your in-game Elite Dangerous HUD colour settings (reads EDHM-UI themes or the game's native <code>GUIColour</code> config)</li>
+        <li>Dark-mode base (neutral near-black with steel-grey accents), with an in-app HUD switch that overlays your chosen in-game Elite Dangerous HUD colour scheme on top</li>
+        <li>HUD colour matching: reads EDHM-UI themes or the game's native <code>GUIColour</code> config, so flipping the switch shows exactly what you've set in-game</li>
         <li>Builds to a single self-contained <code>.exe</code>, with a script that adds Desktop and Start-Menu shortcuts</li>
       </ul>
       <div class="tags">
