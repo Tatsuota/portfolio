@@ -561,11 +561,14 @@ code {
   .project:nth-of-type(even) .info { order: 0; }
 
   /* compact type so a full card fits a single Letter page */
-  .info h3 { font-size: 1.22rem; margin-bottom: 6px; }
-  .lede { font-size: 0.81rem; margin-bottom: 8px; }
-  .info > p:not(.lede) { font-size: 0.745rem; margin-bottom: 10px; }
-  .features { margin-bottom: 11px; }
-  .features li { font-size: 0.715rem; margin-bottom: 4px; padding-left: 16px; }
+  .info h3 { font-size: 1.18rem; margin-bottom: 5px; }
+  .lede { font-size: 0.78rem; line-height: 1.4; margin-bottom: 7px; }
+  .info > p:not(.lede) { font-size: 0.72rem; line-height: 1.4; margin-bottom: 9px; }
+  .features { margin-bottom: 10px; }
+  /* line-height is the biggest lever here: feature bullets wrap to 2-3 lines
+     each, and the longest card (Elite Discoveries, 11 bullets) has to fit one
+     Letter page or break-inside:avoid gives up and strands the tags overleaf. */
+  .features li { font-size: 0.685rem; line-height: 1.34; margin-bottom: 3px; padding-left: 15px; }
   .features li::before { left: 2px; }
   .tags span { font-size: 0.66rem; padding: 3px 8px; }
   .meta { margin-bottom: 10px; }

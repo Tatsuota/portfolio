@@ -66,8 +66,8 @@
       <li>Android</li><li>Git &amp; GitHub</li>
     </ul>
     <div class="hero-stats">
-      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Applications shipped &amp; in daily use</span></div>
-      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Platforms: Windows, web, Android</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Applications shipped &amp; in daily use</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Platforms: Windows, Android, CLI</span></div>
       <div class="stat"><span class="stat-num">9+</span><span class="stat-label">Years client-facing operations</span></div>
     </div>
     <a class="hero-live print-only" href="https://tatsuota.github.io/portfolio/">🌐 View the live portfolio &nbsp;·&nbsp; tatsuota.github.io/portfolio</a>
@@ -101,21 +101,21 @@
         found in your journals; pick one and it reads every scan for that character,
         applies the game's own <code>WasDiscovered</code> / <code>WasMapped</code> flags
         to match in-game "Discovered by" tags, and organizes findings into categories with
-        colour-coded headers. The UI ships with a neutral dark theme — near-black with
-        steel-grey accents — and includes a HUD switch in the top bar that overlays your
+        colour-coded headers. The UI ships with a neutral dark theme (near-black with
+        steel-grey accents) and includes a HUD switch in the top bar that overlays your
         in-game Elite Dangerous HUD colour scheme on top of that dark base. It runs as a true
         native window via Edge WebView2, completely offline: no login, no API key, and
         nothing ever leaves the machine.
       </p>
       <ul class="features">
         <li>Commander picker on launch lets you read one character at a time; parses 250+ journal files to build that character's discovery record</li>
-        <li>Discoveries tab organizes finds into colour-coded category groups — each system type (Earth-Like, Water World, Ammonia World, Anomaly, Terraformable, Biological) gets its own fixed colour that stays readable in either HUD mode</li>
+        <li>Discoveries tab organizes finds into colour-coded category groups: each system type (Earth-Like, Water World, Ammonia World, Anomaly, Terraformable, Biological) gets its own fixed colour that stays readable in either HUD mode</li>
         <li>Single-column bars show system name, feature labels, and a one-click copy button to paste into the in-game galaxy map</li>
         <li>Nearest-first mode: enter your current in-game system (or any previously-visited location) and re-sorts all discoveries by light-year distance in bands</li>
         <li>A Codex tab rebuilds biological, geological, and astronomical finds from journal <code>CodexEntry</code> events, grouped by category and sub-category with a "first logged" flag</li>
         <li>Every star system includes a holographic wireframe body portrait drawn from its actual stats, with atmosphere, gravity, temperature, rings, and bio/geo signal indicators</li>
         <li>Stats strip totals systems first-discovered, bodies discovered and mapped, and Earth-like / water / ammonia world counts at a glance</li>
-        <li>Parses 259 journals in about a second, then caches each file against its size and timestamp — since journals are append-only, a refresh only re-reads the one the game is still writing</li>
+        <li>Parses 259 journals in about a second, then caches each file against its size and timestamp; since journals are append-only, a refresh only re-reads the one the game is still writing</li>
         <li>Dark-mode base (neutral near-black with steel-grey accents), with an in-app HUD switch that overlays your chosen in-game Elite Dangerous HUD colour scheme on top</li>
         <li>HUD colour matching: reads EDHM-UI themes or the game's native <code>GUIColour</code> config, so flipping the switch shows exactly what you've set in-game</li>
         <li>Builds to a single self-contained <code>.exe</code>, with a script that adds Desktop and Start-Menu shortcuts</li>
@@ -144,7 +144,7 @@
       <h3>MW5 VKB HOSAS Mapper</h3>
       <p class="lede">Maps two VKB Gladiator EVO sticks for MechWarrior 5 and MechWarrior Online, with a binding editor, live control indicator, and atomic config writes to three different game formats.</p>
       <p>
-        MechWarrior 5 and MechWarrior Online have no built-in dual-joystick setup UI. This app fills that gap: it detects both sticks over USB, shows which control you're moving in real time with an on-screen diagram, and lets you bind in-game actions by simply pressing a button or moving an axis. It writes three different config formats surgically — only changing the bindings you set, leaving everything else untouched — with atomic writes so a failure can never corrupt the live game file. It auto-syncs changes as you edit, and ships as a one-click installer.
+        MechWarrior 5 and MechWarrior Online have no built-in dual-joystick setup UI. This app fills that gap: it detects both sticks over USB, shows which control you're moving in real time with an on-screen diagram, and lets you bind in-game actions by simply pressing a button or moving an axis. It writes three different config formats surgically, changing only the bindings you set and leaving everything else untouched, with atomic writes so a failure can never corrupt the live game file. It auto-syncs changes as you edit, and ships as a one-click installer.
       </p>
       <ul class="features">
         <li>Live device panel identifies every button and axis as you move it; hovering explains what each action does in the cockpit</li>
@@ -155,7 +155,7 @@
         <li>Auto-sync pushes edits to the live game files in real time</li>
         <li>Per-axis invert and deadzone tuning; saved profiles; conflict warning when two identical sticks share a USB VID/PID (with the firmware fix explained)</li>
         <li>Guided calibration wizard, and one-click unbind for any action</li>
-        <li>Installs via <code>Install MW5 VKB Mapper.bat</code> — creates Start Menu + Desktop shortcuts, no Python needed</li>
+        <li>Installs via <code>Install MW5 VKB Mapper.bat</code>: creates Start Menu + Desktop shortcuts, no Python needed</li>
       </ul>
       <div class="tags">
         <span>Python</span><span>Tkinter</span><span>pygame</span><span>Pillow</span><span>PyInstaller</span>
