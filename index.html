@@ -170,7 +170,7 @@
       <img src="images/plex-media-manager.png" alt="Plex Media Manager desktop app showing phone pairing, UGREEN NAS connection settings, and Plex server integration" loading="lazy">
       <div class="shot-links">
         <span class="shot-links-label">Get the app:</span>
-        <a href="https://tatsuota.github.io/portfolio/downloads/Plex-Media-Manager.exe">⬇ Windows app <small>.exe · 8 MB</small></a>
+        <a href="https://tatsuota.github.io/portfolio/downloads/Plex-Media-Manager.exe">⬇ Windows app <small>.exe · 7.7 MB</small></a>
         <a href="https://tatsuota.github.io/portfolio/downloads/Plex-Media-Manager-Android.apk">⬇ Android app <small>.apk · 5 MB</small></a>
         <a class="shot-link-src" href="https://github.com/Tatsuota/plex-media-manager" target="_blank" rel="noopener">&lt;/&gt; Source code</a>
       </div>
@@ -195,6 +195,8 @@
         <li>Connection check covers SMB reachability, a real write-permission test on the share, and a free-space report</li>
         <li>Parses messy file names into Plex's <code>Movie (Year)</code> and <code>Show - s01e01</code> structures; subtitle and metadata sidecar files are renamed and moved with their media</li>
         <li>Dry-run by default: the organizer prints its full plan, and only <code>--apply</code> (or the desktop confirm) commits it</li>
+        <li>Auto-scan Plex library after media is imported or organized (in Settings)</li>
+        <li>Watch folder auto-import: drop video files into a configured folder and they're organized into Plex layout automatically, then trigger a Plex scan — no manual step needed</li>
         <li>Uses UNC paths rather than mapped drives throughout, so the Plex service always sees the library</li>
         <li>Point it at the Plex server (URL + token) and it becomes a library browser: cover art, categories, and name search across everything Plex has catalogued</li>
         <li>The Android app pairs with the desktop app over home Wi-Fi by entering the address the desktop shows, with no cloud account involved</li>
